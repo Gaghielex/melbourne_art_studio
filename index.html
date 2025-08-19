@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melbourne Art Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light dark:bg-dark text-dark dark:text-light transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/90 dark:bg-dark/90 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2 logo-hover">
+                <!-- Light mode logo (visible in light mode, hidden in dark mode) -->
+                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden">
+                <!-- Dark mode logo (hidden in light mode, visible in dark mode) -->
+                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block">
+                <span class="text-2xl font-serif font-bold tracking-tight">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="hover:text-primary transition-colors">Home</a>
+                <a href="#about" class="hover:text-primary transition-colors">About</a>
+                <a href="#gallery" class="hover:text-primary transition-colors">Gallery</a>
+                <a href="#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="#customer-reviews" class="hover:text-primary transition-colors">Customer Reviews</a>
+                <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+            </div>
+            
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+            </button>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-dark shadow-md">
+            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="#home" class="hover:text-primary transition-colors">Home</a>
+                <a href="#about" class="hover:text-primary transition-colors">About</a>
+                <a href="#gallery" class="hover:text-primary transition-colors">Gallery</a>
+                <a href="#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="#customer-reviews" class="hover:text-primary transition-colors">Customer Reviews</a>
+                <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden">
+        <!-- Background Image with Blur Effect -->
+        <div class="absolute inset-0 w-full h-full z-0">
+            <div class="absolute inset-0 hero-bg-image" style="background-image: url('assets/images/Portrait.jpg');"></div>
+            <div class="absolute inset-0 blur-backdrop bg-light/50 dark:bg-dark/50"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 py-16 text-center relative z-10">
+            <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 opacity-0 translate-y-10 animate-fade-in-up">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></h1>
+            <p class="text-xl md:text-2xl max-w-2xl mx-auto mb-10 opacity-0 translate-y-10 animate-fade-in-up animation-delay-300">Professional artist based in Melbourne.</p>
+            <div class="flex justify-center space-x-4 opacity-0 translate-y-10 animate-fade-in-up animation-delay-600">
+                <a href="#gallery" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full transition-colors">View Gallery</a>
+                <a href="#contact" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors">Contact Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-50 dark:bg-dark/80">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0" data-aos="fade-right">
+                    <div class="relative">
+                        <div class="w-full h-96 bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
+                            <!-- Placeholder for actual image -->
+                            <div class="w-full h-full flex items-center justify-center text-gray-500">
+                                <span>Studio Image</span>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-6 -right-6 w-40 h-40 bg-primary rounded-lg"></div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 md:pl-12" data-aos="fade-left">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">About Our Studio</h2>
+                    <p class="text-lg mb-6">Melbourne Art Studio is a contemporary art space dedicated to nurturing artistic talent and presenting thought-provoking exhibitions. Founded in 2018, our studio has become a hub for artists and art lovers alike.</p>
+                    <p class="text-lg mb-8">We provide a platform for emerging and established artists to showcase their work, collaborate, and engage with the community through exhibitions, workshops, and events.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm flex items-center">
+                            <i class="fas fa-paint-brush text-primary text-2xl mr-3"></i>
+                            <div>
+                                <h3 class="font-bold">Art Classes</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">For all skill levels</p>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm flex items-center">
+                            <i class="fas fa-users text-primary text-2xl mr-3"></i>
+                            <div>
+                                <h3 class="font-bold">Community Events</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Monthly gatherings</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-2 text-center">Our Gallery</h2>
+            <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">Explore our diverse collection of artworks from talented artists.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
+                <!-- Gallery items will be populated via JavaScript -->
+                <!-- Placeholder items -->
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+                        <span>Artwork 1</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Abstract Composition</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Oil on canvas, 2023</p>
+                    </div>
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+                        <span>Artwork 2</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Urban Landscape</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Mixed media, 2022</p>
+                    </div>
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+                        <span>Artwork 3</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Portrait Study</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Charcoal on paper, 2023</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button id="load-more" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full transition-colors">Load More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exhibitions Section -->
+    <section id="exhibitions" class="py-20 bg-gray-50 dark:bg-dark/80">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-2 text-center">Upcoming Exhibitions</h2>
+            <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">Join us for our exciting lineup of exhibitions showcasing talented artists.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
+                    <div class="h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+                        <span>Exhibition Image</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-sm text-primary mb-2">September 15-30, 2025</div>
+                        <h3 class="text-xl font-bold mb-3">Modern Perspectives</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">A group exhibition featuring contemporary artists exploring themes of urban life and modern society.</p>
+                        <a href="#" class="inline-block text-primary hover:underline">Learn more →</a>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+                        <span>Exhibition Image</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-sm text-primary mb-2">October 10-25, 2025</div>
+                        <h3 class="text-xl font-bold mb-3">Nature Reimagined</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">An exhibition exploring the relationship between humans and nature through various artistic mediums.</p>
+                        <a href="#" class="inline-block text-primary hover:underline">Learn more →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 pr-0 md:pr-12 mb-10 md:mb-0">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">Get In Touch</h2>
+                    <p class="text-lg mb-8">Have questions about our studio, exhibitions, or workshops? We'd love to hear from you.</p>
+                    
+                    <div class="mb-8">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-map-marker-alt text-primary text-xl mr-4"></i>
+                            <span>123 Art Street, Melbourne, VIC 3000</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-phone text-primary text-xl mr-4"></i>
+                            <span>+61 3 1234 5678</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-primary text-xl mr-4"></i>
+                            <span>info@melbourneartsstudio.com</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                            <i class="fab fa-instagram text-2xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                            <i class="fab fa-facebook-f text-2xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                            <i class="fab fa-twitter text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <form id="contact-form" class="space-y-4">
+                        <div>
+                            <label for="name" class="block mb-2 font-medium">Name</label>
+                            <input type="text" id="name" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div>
+                            <label for="email" class="block mb-2 font-medium">Email</label>
+                            <input type="email" id="email" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div>
+                            <label for="message" class="block mb-2 font-medium">Message</label>
+                            <textarea id="message" rows="5" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                        </div>
+                        <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full transition-colors">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-10 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-serif font-bold">Melbourne Art Studio</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Inspiring creativity since 2018</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 dark:text-gray-400">&copy; 2025 Melbourne Art Studio. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/animations.js"></script>
+</body>
+</html>
