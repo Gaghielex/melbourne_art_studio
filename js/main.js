@@ -18,22 +18,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Gallery load more functionality
     initGalleryLoadMore();
+    
+    // Read More functionality
+    initReadMoreButtons();
 });
 
 // Theme Toggle Functionality
 function initTheme() {
     const themeToggleBtn = document.getElementById('theme-toggle');
     
-    // Check for saved theme preference or use system preference
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // If theme was previously saved, use that theme
-    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
+    // Theme is already set by inline script in head, this just sets up the toggle button
     
     // Toggle theme on button click
     themeToggleBtn.addEventListener('click', () => {
@@ -95,34 +89,23 @@ function initContactForm() {
     const contactForm = document.getElementById('contact-form');
     
     if (contactForm) {
+        // Add loading state to the form submit button
         contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            // Don't prevent default - let the form submit to Formspree
             
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
-            // Basic validation
-            if (!name || !email || !message) {
-                alert('Please fill out all fields');
-                return;
-            }
-            
-            // Simulate form submission
+            // Update the button state to indicate submission
             const submitButton = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitButton.innerText;
+            const originalHTML = submitButton.innerHTML;
             
             submitButton.disabled = true;
-            submitButton.innerText = 'Sending...';
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Sending...</span>';
             
-            // Simulate API call with timeout
+            // After successful submission, Formspree will redirect back or show their success page
+            // Add a timeout to reset the button if submission takes too long
             setTimeout(() => {
-                alert('Thank you for your message! We will get back to you soon.');
-                contactForm.reset();
                 submitButton.disabled = false;
-                submitButton.innerText = originalText;
-            }, 1500);
+                submitButton.innerHTML = originalHTML;
+            }, 10000); // 10 seconds timeout
         });
     }
 }
@@ -154,65 +137,123 @@ function initSmoothScroll() {
     });
 }
 
-// Gallery Load More Functionality
+// Gallery Functionality
 function initGalleryLoadMore() {
-    const loadMoreBtn = document.getElementById('load-more');
-    const galleryGrid = document.getElementById('gallery-grid');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const viewGalleryBtn = document.querySelector('.gallery-section button');
     
-    if (loadMoreBtn && galleryGrid) {
-        // Sample gallery items to load more (in a real site, this would come from an API)
-        const moreItems = [
-            {
-                title: 'Seascape',
-                medium: 'Watercolor, 2023',
-                image: 'seascape'
-            },
-            {
-                title: 'Geometric Forms',
-                medium: 'Digital art, 2024',
-                image: 'geometric'
-            },
-            {
-                title: 'Still Life Study',
-                medium: 'Acrylic on canvas, 2023',
-                image: 'still-life'
-            }
-        ];
-        
-        let loadCount = 0;
-        
-        loadMoreBtn.addEventListener('click', () => {
-            // If we've loaded all items, disable the button
-            if (loadCount >= 1) {
-                loadMoreBtn.disabled = true;
-                loadMoreBtn.innerText = 'No More Artworks';
-                loadMoreBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                return;
-            }
-            
-            // Add new items to the gallery
-            moreItems.forEach(item => {
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'gallery-item overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow opacity-0';
-                galleryItem.innerHTML = `
-                    <div class="h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
-                        <span>${item.image}</span>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg">${item.title}</h3>
-                        <p class="text-gray-500 dark:text-gray-400">${item.medium}</p>
-                    </div>
-                `;
+    if (galleryItems.length > 0) {
+        // Add click event to each gallery item for lightbox effect
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.querySelector('img').getAttribute('src');
+                const imgAlt = item.querySelector('img').getAttribute('alt');
+                const title = item.querySelector('h3').textContent;
+                const medium = item.querySelector('p').textContent;
                 
-                galleryGrid.appendChild(galleryItem);
-                
-                // Animate the new items
-                setTimeout(() => {
-                    galleryItem.classList.add('animate-fade-in-up');
-                }, 100);
+                openLightbox(imgSrc, imgAlt, title, medium);
             });
-            
-            loadCount++;
         });
     }
+    
+    // Initialize lightbox functionality
+    function openLightbox(src, alt, title, medium) {
+        // Create lightbox container
+        const lightbox = document.createElement('div');
+        lightbox.className = 'fixed inset-0 bg-black/90 z-50 flex items-center justify-center opacity-0 transition-opacity duration-300';
+        lightbox.style.backdropFilter = 'blur(5px)';
+        
+        // Create lightbox content
+        lightbox.innerHTML = `
+            <div class="relative max-w-4xl mx-auto p-4 w-full">
+                <button class="absolute top-4 right-4 text-white text-3xl hover:text-primary transition-colors z-10">&times;</button>
+                <div class="relative">
+                    <img src="${src}" alt="${alt}" class="max-h-[80vh] max-w-full mx-auto rounded-lg shadow-2xl">
+                    <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4 rounded-b-lg">
+                        <h3 class="text-xl font-bold">${title}</h3>
+                        <p class="text-gray-300">${medium}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add to body
+        document.body.appendChild(lightbox);
+        document.body.classList.add('overflow-hidden');
+        
+        // Fade in
+        setTimeout(() => {
+            lightbox.classList.add('opacity-100');
+        }, 10);
+        
+        // Close on click
+        const closeBtn = lightbox.querySelector('button');
+        closeBtn.addEventListener('click', () => {
+            lightbox.classList.remove('opacity-100');
+            setTimeout(() => {
+                document.body.removeChild(lightbox);
+                document.body.classList.remove('overflow-hidden');
+            }, 300);
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', function escClose(e) {
+            if (e.key === 'Escape') {
+                closeBtn.click();
+                document.removeEventListener('keydown', escClose);
+            }
+        });
+        
+        // Close on background click
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeBtn.click();
+            }
+        });
+    }
+    
+    // View Full Gallery button effect
+    const fullGalleryBtn = document.querySelector('[href="#"]'); // Update with actual gallery page link
+    if (fullGalleryBtn) {
+        fullGalleryBtn.addEventListener('mousemove', (e) => {
+            const rect = fullGalleryBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            fullGalleryBtn.style.setProperty('--x-pos', `${x}px`);
+            fullGalleryBtn.style.setProperty('--y-pos', `${y}px`);
+        });
+    }
+}
+
+// Read More Button Functionality
+function initReadMoreButtons() {
+    const readMoreBtns = document.querySelectorAll('.read-more-btn');
+    
+    readMoreBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('data-target');
+            if (!targetId) return;
+            
+            const expandableContent = document.getElementById(targetId);
+            if (!expandableContent) return;
+            
+            // Toggle visibility
+            const isExpanded = expandableContent.classList.contains('max-h-screen');
+            
+            if (isExpanded) {
+                // Collapse
+                expandableContent.classList.remove('max-h-screen');
+                expandableContent.classList.add('max-h-0');
+                this.innerHTML = 'Read More <i class="fas fa-chevron-down ml-2"></i>';
+            } else {
+                // Expand
+                expandableContent.classList.remove('max-h-0');
+                expandableContent.classList.add('max-h-screen');
+                this.innerHTML = 'Read Less <i class="fas fa-chevron-up ml-2"></i>';
+            }
+        });
+    });
 }

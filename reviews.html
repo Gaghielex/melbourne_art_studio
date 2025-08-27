@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Early theme initialization to prevent flash -->
+    <script>
+        // Immediately apply theme preference before page renders
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Reviews - Melbourne Art Studio</title>
+    <meta name="description" content="Read testimonials from clients who have experienced Gabriel's artistic expertise at Melbourne Art Studio. Discover what people are saying about commissioned artwork and art coaching services.">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- AOS - Animate On Scroll Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+</head>
+<body class="bg-light dark:bg-dark text-dark dark:text-light transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/90 dark:bg-dark/90 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 logo-hover">
+                <!-- Light mode logo (visible in light mode, hidden in dark mode) -->
+                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden">
+                <!-- Dark mode logo (hidden in light mode, visible in dark mode) -->
+                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block">
+                <span class="text-2xl font-serif font-bold tracking-tight">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="hover:text-primary transition-colors">Home</a>
+                <a href="about.html" class="hover:text-primary transition-colors">About</a>
+                <div class="relative group">
+                    <span class="cursor-pointer hover:text-primary transition-colors flex items-center">
+                        Services <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </span>
+                    <div class="absolute hidden group-hover:block hover:block bg-white dark:bg-dark shadow-lg rounded-md overflow-hidden min-w-[180px] z-50 mt-0">
+                        <div class="py-1">
+                            <a href="commissions.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Commissions</a>
+                            <a href="international.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">International Commissions</a>
+                            <a href="coaching.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Art Coaching</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="gallery.html" class="hover:text-primary transition-colors">Gallery</a>
+                <a href="reviews.html" class="text-primary">Reviews</a>
+                <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
+            </div>
+            
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+            </button>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden bg-white dark:bg-dark shadow-lg absolute w-full left-0 py-4 px-6 mt-1 hidden">
+            <ul class="space-y-4">
+                <li><a href="index.html" class="block hover:text-primary transition-colors">Home</a></li>
+                <li><a href="about.html" class="block hover:text-primary transition-colors">About</a></li>
+                <li>
+                    <span class="block hover:text-primary transition-colors font-medium">Services</span>
+                    <ul class="pl-4 mt-2 space-y-0 border-l-2 border-gray-200 dark:border-gray-700">
+                        <li><a href="commissions.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Commissions</a></li>
+                        <li><a href="international.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">International Commissions</a></li>
+                        <li><a href="coaching.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Art Coaching</a></li>
+                    </ul>
+                </li>
+                <li><a href="gallery.html" class="block hover:text-primary transition-colors">Gallery</a></li>
+                <li><a href="reviews.html" class="block text-primary">Reviews</a></li>
+                <li><a href="index.html#contact" class="block hover:text-primary transition-colors">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20 overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6" data-aos="fade-up">Customer Reviews</h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8" data-aos="fade-up" data-aos-delay="100">Hear what clients have to say about their experience</p>
+                <a href="#leave-review" class="inline-flex items-center px-6 py-3 bg-primary hover:bg-indigo-700 text-white font-medium rounded-full transition-colors duration-300 shadow-md hover:shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-pen-alt mr-2"></i>
+                    Leave Your Review
+                </a>
+            </div>
+        </div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute top-20 left-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+        
+        <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-light dark:from-dark to-transparent"></div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="py-16 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <!-- Page 1 Reviews -->
+            <div id="reviews-page-1" class="reviews-page active">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Review 1 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                CF
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Christian F.</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Florida, USA</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Gabriel's work was amazing. He made me an acrylic portrait and I cannot stop looking at it. It's truly amazing and I would recommend everyone to get art from him."</p>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                LV
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Lianne V.</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">United States</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"I worked with Gabriel on a commission for a digital painting. Even though I'm in Canada and he is in Japan it was effortless to do this online. Gabriel gave me exactly what I was looking for and I am so pleased with the painting he did for me. I just love it."</p>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                RP
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Radu P.</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Bucharest, Romania</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Great experience working with Gabriel. My commission was a small one for a masterpiece that he already created, I got all the support I needed. Will not hesitate to call him again in the future."</p>
+                    </div>
+
+                    <!-- Review 4 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                CP
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Christian P.</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Osaka, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"I was looking for a portrait to gift a friend for his birthday, and I wanted something unique, nice and customisable so, I knew that Gabriel was the person to talk to. The final product was a beautiful and unique portrait that my friend loved very dearly. I would not hesitate to contact Gabriel again in the future!"</p>
+                    </div>
+
+                    <!-- Review 5 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                CS
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Cheryl S.</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"I was looking for a portrait of my partner. Gabriel was awesome to work with and brought all my dreams to life with his artwork! I'm super happy with the whole process and would recommend Gabriel to anyone looking for a special piece."</p>
+                    </div>
+
+                    <!-- Review 6 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                CG
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Cassie G.</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"I knew I wanted a piece of artwork by Gabriel, but I only had a few vague ideas about color and subjects and didn't even know what medium I wanted. After lots of conversations, he was able to create a beautiful digital piece that surpassed all my expectations. It's perfect, and I love it! Thank you!!"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2 Reviews (Initially Hidden) -->
+            <div id="reviews-page-2" class="reviews-page hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Review 7 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                ハロ
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">ハロH</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"お世話になります。 本日受け取りました。 ありがとうございました。"</p>
+                    </div>
+
+                    <!-- Review 8 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                KS
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Ｋ★S鬼滅∪ｙ</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"こんにちは♪(^-^)/先程商品を受け取りました❤️この度は、有難うございました_(..)_★また、ご縁がありましたら宜しくお願い致しますね(*^^*)"</p>
+                    </div>
+
+                    <!-- Review 9 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                リア
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">リア</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"この度はありがとうございました！ また、ご機会がありましたら宜しくお願い致します。"</p>
+                    </div>
+
+                    <!-- Review 10 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                MB
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">マヤ・ブレア</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"届きました(*´ω｀*)とても良かったです(о´∀`о)ノありがとうございました～(* ´ ▽ ` *)ノ"</p>
+                    </div>
+
+                    <!-- Review 11 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                晶子
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">晶子さん</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"本日受けとりました。(*^^*)さっそく、カウンターキッチンの全面スペースに飾らせていただきました。とっても可愛い素敵な作品です(^^)v"</p>
+                    </div>
+
+                    <!-- Review 12 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                れい
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">れい</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"無事受け取りました！ 素敵に描いていただきありがとうございます^ ^ またのご縁がありましたらよろしくお願い致します^ ^"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page 3 Reviews (Initially Hidden) -->
+            <div id="reviews-page-3" class="reviews-page hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Review 13 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                うん
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">うんうん</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"ありがとうございました。 また機会がありましたらよろしくお願いいたします。"</p>
+                    </div>
+
+                    <!-- Review 14 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                なる
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">なるこま</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"本日受け取りました。 この度は迅速丁寧なお取引きをありがとうございました！"</p>
+                    </div>
+
+                    <!-- Review 15 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                福い
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">福いっぱい</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"本日、無事に届きました～ イイですね～ 譲ってくださって ありがとうございました。"</p>
+                    </div>
+
+                    <!-- Review 16 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                CY
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">cyay</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"とっても可愛く素敵な品でした。満足です。"</p>
+                    </div>
+
+                    <!-- Review 17 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                MT
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Mitzy</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"I am very satisfied with the wonderful finish. Also, thank you for your great communication along the process and careful packaging!"</p>
+                    </div>
+
+                    <!-- Review 18 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                すす
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">すす</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"届きました！気に入りました。 ありがとうございましたm(*_ _)m"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page 4 Reviews (Initially Hidden) -->
+            <div id="reviews-page-4" class="reviews-page hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Review 19 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                DD
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">DD878</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Thank you for your wonderful work. It seems to energize the whole family at home. Thank you very much."</p>
+                    </div>
+
+                    <!-- Review 20 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                ひろ
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">ひろジャン</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"無事受け取り 飾りました。 この度は、良い作品をありがとうございました(^-^)/"</p>
+                    </div>
+
+                    <!-- Review 21 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                まり
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">まりもこ</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"ありがとうございます 丁寧な梱包迅速な対応ありがとうございました また機会があればよろしくお願いしま"</p>
+                    </div>
+
+                    <!-- Review 22 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                ちび
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">ちびすけ</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"楽しみにしておりました。 とても素敵です。 有難うございました❣️"</p>
+                    </div>
+                    
+                    <!-- Review 23 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                LP
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">★Love Pi☆</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"先ほど、無事に受け取りました(*^^*)この度は、迅速かつ丁寧な対応ありがとうございました♪商品も大変気に入りました(^-^)"</p>
+                    </div>
+                    
+                    <!-- Review 24 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                UC
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">Umi-chan</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Thank you for such an amazing drawing!"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page 5 Reviews (Initially Hidden) -->
+            <div id="reviews-page-5" class="reviews-page hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Review 25 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                ミー
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-gray-900 dark:text-white">ミー</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Thank you for your polite packing and prompt responses. I just received the drawing and I'm so happy with it! Great work!"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center mt-12">
+                <div class="inline-flex rounded-md shadow-sm">
+                    <button id="page-1-btn" class="pagination-btn active px-4 py-2 bg-primary text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        1
+                    </button>
+                    <button id="page-2-btn" class="pagination-btn px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        2
+                    </button>
+                    <button id="page-3-btn" class="pagination-btn px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        3
+                    </button>
+                    <button id="page-4-btn" class="pagination-btn px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        4
+                    </button>
+                    <button id="page-5-btn" class="pagination-btn px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-r-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        5
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leave a Review Section -->
+    <section id="leave-review" class="py-16 px-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20">
+        <div class="container mx-auto max-w-4xl">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden">
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl font-serif font-bold mb-6" data-aos="fade-up">Share Your Experience</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-8" data-aos="fade-up" data-aos-delay="100">I value your feedback! If you've worked with me, please take a moment to share your experience and help others make informed decisions.</p>
+                    
+                    <form id="review-form" class="space-y-4" data-aos="fade-up" data-aos-delay="200" action="https://formspree.io/f/xpwjzejr" method="POST">
+                        <div>
+                            <label for="name" class="block mb-2 font-medium">Name</label>
+                            <input type="text" id="name" name="name" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block mb-2 font-medium">Email</label>
+                            <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                        </div>
+                        <div>
+                            <label for="review" class="block mb-2 font-medium">Your Review</label>
+                            <textarea id="review" name="review" rows="5" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" required></textarea>
+                        </div>
+                        <input type="hidden" name="_subject" value="New review from Melbourne Art Studio website">
+                        <input type="text" name="_gotcha" style="display:none">
+                        <button type="submit" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            <span>Submit Review</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-16 pb-8 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <!-- Footer Top Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Brand Column -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <div class="flex space-x-3">
+                        <img src="assets/svg/Magpie (light).svg" class="h-10 dark:hidden">
+                        <img src="assets/svg/Magpie (dark).svg" class="h-10 hidden dark:block">
+                        <div>
+                            <h3 class="text-xl font-serif font-bold">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Be inspired. Keep creating.</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Melbourne's premier studio for digital and traditional style art.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/gabu_melbourne_art/" target="_blank" aria-label="Instagram" class="social-icon w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors shadow-sm">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/gabriel-guevara-p/" target="_blank" aria-label="LinkedIn" class="social-icon w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors shadow-sm">
+                            <i class="fab fa-linkedin-in text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Column -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Home</a></li>
+                        <li><a href="about.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">About</a></li>
+                        <li><a href="gallery.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Gallery</a></li>
+                        <li><a href="reviews.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Reviews</a></li>
+                        <li><a href="index.html#contact" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services Column -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="digital-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Digital Illustrations</a></li>
+                        <li><a href="traditional-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Traditional Art</a></li>
+                        <li><a href="coaching.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Art Coaching</a></li>
+                        <li><a href="commissions.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Custom Commissions</a></li>
+                        <li><a href="international.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">International Commissions</a></li>
+                    </ul>
+                </div>
+            
+            </div>
+            
+            <!-- SEO Text Section -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-8 mb-8">
+                <div class="max-w-6xl mx-auto">
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Melbourne Art Studio specializes in creating stunning digital illustrations, traditional artwork, and providing personalized art coaching services. I offer custom art commissions for
+                        individuals and businesses, and engaging coaching sessions for artists of all skill levels. Based in Melbourne, Australia, I work with clients globally to bring creative visions to 
+                        life through vibrant, meaningful artwork.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Copyright Section -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6 text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 md:mb-0">&copy; 2025 Melbourne Art Studio. All rights reserved.</p>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- AOS - Animate On Scroll Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/animations.js"></script>
+    
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    </script>
+    
+    <!-- Reviews Page JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pagination functionality
+            const pages = [
+                document.getElementById('reviews-page-1'),
+                document.getElementById('reviews-page-2'),
+                document.getElementById('reviews-page-3'),
+                document.getElementById('reviews-page-4'),
+                document.getElementById('reviews-page-5')
+            ];
+            
+            const pageBtns = [
+                document.getElementById('page-1-btn'),
+                document.getElementById('page-2-btn'),
+                document.getElementById('page-3-btn'),
+                document.getElementById('page-4-btn'),
+                document.getElementById('page-5-btn')
+            ];
+            
+            // Function to show a specific page
+            function showPage(pageIndex) {
+                // Hide all pages
+                pages.forEach(page => {
+                    page.classList.add('hidden');
+                    page.classList.remove('active');
+                });
+                
+                // Reset all buttons
+                pageBtns.forEach(btn => {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                });
+                
+                // Show the selected page
+                pages[pageIndex].classList.remove('hidden');
+                pages[pageIndex].classList.add('active');
+                
+                // Highlight the selected button
+                pageBtns[pageIndex].classList.add('bg-primary', 'text-white');
+                pageBtns[pageIndex].classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                
+                // Scroll to top of reviews section
+                document.querySelector('.reviews-page').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Add click event listeners to all pagination buttons
+            pageBtns.forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    showPage(index);
+                });
+            });
+            
+            // Handle review form submission with Formspree
+            const reviewForm = document.getElementById('review-form');
+            if (reviewForm) {
+                reviewForm.addEventListener('submit', function(e) {
+                    // Don't prevent default - let the form submit to Formspree
+                    
+                    // Update the button state to indicate submission
+                    const submitButton = reviewForm.querySelector('button[type="submit"]');
+                    const originalHTML = submitButton.innerHTML;
+                    
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Submitting...</span>';
+                    
+                    // After successful submission, Formspree will redirect back or show their success page
+                    // Add a timeout to reset the button if submission takes too long
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalHTML;
+                    }, 10000); // 10 seconds timeout
+                });
+            }
+        });
+    </script>
+</body>
+</html>

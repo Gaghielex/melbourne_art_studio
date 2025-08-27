@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize parallax effect
     initParallaxEffect();
+    
+    // Initialize reviews carousel
+    initReviewsCarousel();
 });
 
 // Page Transition Animations
@@ -184,4 +187,149 @@ function initParallaxEffect() {
             element.style.transform = `translate(${x}px, ${y}px)`;
         });
     });
+}
+
+// Reviews Carousel
+function initReviewsCarousel() {
+    const track = document.querySelector('.reviews-track');
+    const slides = document.querySelectorAll('.review-slide');
+    const nextButton = document.getElementById('next-review');
+    const prevButton = document.getElementById('prev-review');
+    const paginationDots = document.querySelectorAll('.pagination-dot');
+    
+    if (!track || slides.length === 0) return;
+    
+    let currentIndex = 0;
+    let slidesToShow = 1; // Default for mobile
+    
+    // Determine how many slides to show based on screen width
+    function updateSlidesToShow() {
+        if (window.innerWidth >= 768) {
+            slidesToShow = 3; // Show 3 on medium screens and up
+        } else {
+            slidesToShow = 1; // Show 1 on small screens
+        }
+        goToSlide(currentIndex);
+    }
+    
+    // Set initial state
+    updateSlidesToShow();
+    window.addEventListener('resize', updateSlidesToShow);
+    
+    // Function to update the carousel position
+    function goToSlide(index) {
+        // Make sure index is in bounds
+        if (index < 0) {
+            index = 0;
+        } else if (index > slides.length - slidesToShow) {
+            index = slides.length - slidesToShow;
+        }
+        
+        currentIndex = index;
+        
+        // Calculate the percentage to translate
+        const slideWidth = 100 / slidesToShow;
+        const translateX = -index * slideWidth;
+        
+        // Apply the transform
+        track.style.transform = `translateX(${translateX}%)`;
+        
+        // Update pagination dots
+        updatePaginationDots();
+    }
+    
+    // Update pagination dots to reflect current position
+    function updatePaginationDots() {
+        const totalPages = Math.ceil(slides.length / slidesToShow);
+        const currentPage = Math.floor(currentIndex / slidesToShow);
+        
+        // Make sure we don't have more dots than pages
+        paginationDots.forEach((dot, i) => {
+            if (i < totalPages) {
+                dot.style.display = 'block';
+                if (i === currentPage) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            } else {
+                dot.style.display = 'none';
+            }
+        });
+    }
+    
+    // Event listeners for next/prev buttons
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            goToSlide(currentIndex + slidesToShow);
+        });
+    }
+    
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            goToSlide(currentIndex - slidesToShow);
+        });
+    }
+    
+    // Event listeners for pagination dots
+    paginationDots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            goToSlide(i * slidesToShow);
+        });
+    });
+    
+    // Touch swipe functionality
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    track.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    track.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Swipe left, go to next
+            goToSlide(currentIndex + slidesToShow);
+        }
+        if (touchEndX > touchStartX + swipeThreshold) {
+            // Swipe right, go to previous
+            goToSlide(currentIndex - slidesToShow);
+        }
+    }
+    
+    // Auto-play functionality (optional)
+    let autoplayInterval = null;
+    
+    function startAutoplay() {
+        autoplayInterval = setInterval(() => {
+            // Check if we've reached the end
+            if (currentIndex >= slides.length - slidesToShow) {
+                goToSlide(0); // Go back to the beginning
+            } else {
+                goToSlide(currentIndex + slidesToShow);
+            }
+        }, 5000); // Change slide every 5 seconds
+    }
+    
+    function stopAutoplay() {
+        if (autoplayInterval) {
+            clearInterval(autoplayInterval);
+        }
+    }
+    
+    // Start autoplay by default
+    startAutoplay();
+    
+    // Pause autoplay on hover or touch
+    track.addEventListener('mouseenter', stopAutoplay);
+    track.addEventListener('touchstart', stopAutoplay);
+    
+    // Resume autoplay when mouse leaves
+    track.addEventListener('mouseleave', startAutoplay);
 }

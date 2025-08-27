@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Early theme initialization to prevent flash -->
+    <script>
+        // Immediately apply theme preference before page renders
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traditional Artwork Gallery - Melbourne Art Studio</title>
+    <meta name="description" content="Explore Gabriel's traditional artwork gallery showcasing a diverse range of paintings, drawings and traditional artwork from the Melbourne Art Studio.">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- AOS - Animate On Scroll Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+</head>
+<body class="bg-light dark:bg-dark text-dark dark:text-light transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/90 dark:bg-dark/90 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 logo-hover">
+                <!-- Light mode logo (visible in light mode, hidden in dark mode) -->
+                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden">
+                <!-- Dark mode logo (hidden in light mode, visible in dark mode) -->
+                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block">
+                <span class="text-2xl font-serif font-bold tracking-tight">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="hover:text-primary transition-colors">Home</a>
+                <a href="about.html" class="hover:text-primary transition-colors">About</a>
+                <div class="relative group">
+                    <span class="cursor-pointer hover:text-primary transition-colors flex items-center">
+                        Services <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </span>
+                    <div class="absolute hidden group-hover:block hover:block bg-white dark:bg-dark shadow-lg rounded-md overflow-hidden min-w-[180px] z-50 mt-0">
+                        <div class="py-1">
+                            <a href="commissions.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Commissions</a>
+                            <a href="international.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">International Commissions</a>
+                            <a href="coaching.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Art Coaching</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="gallery.html" class="text-primary">Gallery</a>
+                <a href="reviews.html" class="hover:text-primary transition-colors">Reviews</a>
+                <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
+            </div>
+            
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+            </button>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden bg-white dark:bg-dark shadow-lg absolute w-full left-0 py-4 px-6 mt-1 hidden">
+            <ul class="space-y-4">
+                <li><a href="index.html" class="block hover:text-primary transition-colors">Home</a></li>
+                <li><a href="about.html" class="block hover:text-primary transition-colors">About</a></li>
+                <li>
+                    <span class="block hover:text-primary transition-colors font-medium">Services</span>
+                    <ul class="pl-4 mt-2 space-y-0 border-l-2 border-gray-200 dark:border-gray-700">
+                        <li><a href="commissions.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Commissions</a></li>
+                        <li><a href="international.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">International Commissions</a></li>
+                        <li><a href="coaching.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Art Coaching</a></li>
+                    </ul>
+                </li>
+                <li><a href="gallery.html" class="block text-primary">Gallery</a></li>
+                <li><a href="reviews.html" class="block hover:text-primary transition-colors">Reviews</a></li>
+                <li><a href="index.html#contact" class="block hover:text-primary transition-colors">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+        <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6" data-aos="fade-up">Traditional Artwork Gallery</h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8" data-aos="fade-up" data-aos-delay="100">Capturing beauty through brushstrokes and artistic techniques</p>
+            </div>
+        </div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute top-20 left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
+        
+        <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-light dark:from-dark to-transparent"></div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute top-20 left-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl"></div>
+        
+        <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-light dark:from-dark to-transparent"></div>
+    </section>
+
+    <!-- Masonry Gallery -->
+    <section class="py-8 px-4">
+        <div class="container mx-auto">
+            <div class="masonry-grid" id="gallery-container">
+                <!-- Gallery items - All images from Traditional Media folder -->
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Acrylic fox.jpg" alt="Traditional Artwork - Acrylic Fox" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Acrylics bird.jpg" alt="Traditional Artwork - Acrylics Bird" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Amaterasu.JPG" alt="Traditional Artwork - Amaterasu" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Birds.jpg" alt="Traditional Artwork - Birds" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Breakfast (1).JPG" alt="Traditional Artwork - Breakfast 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Breakfast (2).JPG" alt="Traditional Artwork - Breakfast 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Breakfast (3).JPG" alt="Traditional Artwork - Breakfast 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Breakfast (4).jpg" alt="Traditional Artwork - Breakfast 4" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Cacti (1).jpg" alt="Traditional Artwork - Cacti 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Cacti (2).jpg" alt="Traditional Artwork - Cacti 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Cacti (3).jpg" alt="Traditional Artwork - Cacti 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Cats and dogs (1).jpg" alt="Traditional Artwork - Cats and Dogs 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Cats and dogs (2).jpg" alt="Traditional Artwork - Cats and Dogs 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Cats and dogs (3).jpg" alt="Traditional Artwork - Cats and Dogs 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Cats and dogs (4).jpg" alt="Traditional Artwork - Cats and Dogs 4" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Cats and dogs (5).jpg" alt="Traditional Artwork - Cats and Dogs 5" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Cats and dogs (6).jpg" alt="Traditional Artwork - Cats and Dogs 6" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Christmas.jpg" alt="Traditional Artwork - Christmas" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (10).jpg" alt="Traditional Artwork - Ghibli Studio Ink 10" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (2).jpg" alt="Traditional Artwork - Ghibli Studio Ink 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (3).jpg" alt="Traditional Artwork - Ghibli Studio Ink 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (4).jpg" alt="Traditional Artwork - Ghibli Studio Ink 4" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (5).jpg" alt="Traditional Artwork - Ghibli Studio Ink 5" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (6).jpg" alt="Traditional Artwork - Ghibli Studio Ink 6" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (7).jpg" alt="Traditional Artwork - Ghibli Studio Ink 7" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (8).jpg" alt="Traditional Artwork - Ghibli Studio Ink 8" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Ghibli studio ink (9).jpg" alt="Traditional Artwork - Ghibli Studio Ink 9" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Japanese food (1).jpg" alt="Traditional Artwork - Japanese Food 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Japanese food (2).jpg" alt="Traditional Artwork - Japanese Food 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Japanese food (3).jpg" alt="Traditional Artwork - Japanese Food 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Japanese food (4).jpg" alt="Traditional Artwork - Japanese Food 4" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Japanese food (5).jpg" alt="Traditional Artwork - Japanese Food 5" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Japanese house (2).jpg" alt="Traditional Artwork - Japanese House 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Japanese House.jpeg" alt="Traditional Artwork - Japanese House" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Kimetsu no yaiba.jpg" alt="Traditional Artwork - Kimetsu no Yaiba" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Koi fish (1).jpg" alt="Traditional Artwork - Koi Fish 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Koi fish (2).jpg" alt="Traditional Artwork - Koi Fish 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Koi fish (3).jpg" alt="Traditional Artwork - Koi Fish 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Monet Study.jpeg" alt="Traditional Artwork - Monet Study" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Nursery.jpg" alt="Traditional Artwork - Nursery" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Oolong.jpg" alt="Traditional Artwork - Oolong" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Photo Jul 08, 06 48 58.jpg" alt="Traditional Artwork - Photo" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Princess Mononoke.jpeg" alt="Traditional Artwork - Princess Mononoke" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Small flowers (1).jpg" alt="Traditional Artwork - Small Flowers 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Small flowers (10).jpg" alt="Traditional Artwork - Small Flowers 10" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Small flowers (2).jpg" alt="Traditional Artwork - Small Flowers 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Small flowers (3).jpg" alt="Traditional Artwork - Small Flowers 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Small flowers (4).jpg" alt="Traditional Artwork - Small Flowers 4" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Small flowers (5).jpg" alt="Traditional Artwork - Small Flowers 5" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Small flowers (6).jpg" alt="Traditional Artwork - Small Flowers 6" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Small flowers (7).jpg" alt="Traditional Artwork - Small Flowers 7" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Small flowers (8).jpg" alt="Traditional Artwork - Small Flowers 8" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Small flowers (9).jpg" alt="Traditional Artwork - Small Flowers 9" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Sumie (1).JPG" alt="Traditional Artwork - Sumie 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Sumie (2).JPG" alt="Traditional Artwork - Sumie 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Sumie (3).JPG" alt="Traditional Artwork - Sumie 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Summer flowers (1).JPG" alt="Traditional Artwork - Summer Flowers 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Summer flowers (2).jpg" alt="Traditional Artwork - Summer Flowers 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Sushi (1).jpg" alt="Traditional Artwork - Sushi 1" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Sushi (2).jpg" alt="Traditional Artwork - Sushi 2" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Sushi (3).jpg" alt="Traditional Artwork - Sushi 3" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Sushi (4).jpg" alt="Traditional Artwork - Sushi 4" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="assets/images/Traditional Media/Sushi (5).jpg" alt="Traditional Artwork - Sushi 5" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="150">
+                    <img src="assets/images/Traditional Media/Tanjiro Kimetsu no Yaiba.jpeg" alt="Traditional Artwork - Tanjiro Kimetsu no Yaiba" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up">
+                    <img src="assets/images/Traditional Media/Toronga Zoo.jpeg" alt="Traditional Artwork - Toronga Zoo" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+                
+                <div class="masonry-item gallery-item" data-aos="fade-up" data-aos-delay="50">
+                    <img src="assets/images/Traditional Media/Watercolor flowers.jpg" alt="Traditional Artwork - Watercolor Flowers" class="w-full h-auto rounded-lg shadow-md">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="" alt="Expanded artwork">
+            <span id="lightbox-close" class="lightbox-close">&times;</span>
+            <div id="lightbox-prev" class="lightbox-prev">&#10094;</div>
+            <div id="lightbox-next" class="lightbox-next">&#10095;</div>
+        </div>
+    </div>
+
+        <!-- CTA Section -->
+    <section class="py-20 bg-primary/10 dark:bg-primary/20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-serif font-bold mb-6" data-aos="fade-up">Want a Custom Artwork?</h2>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Commission a custom artwork tailored to your vision and needs.</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+                <a href="commissions.html" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full transition-colors">
+                    <i class="fas fa-paint-brush mr-2"></i>
+                    <span>Commission Traditional Artwork</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-16 pb-8 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <!-- Footer Top Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Brand Column -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <div class="flex space-x-3">
+                        <img src="assets/svg/Magpie (light).svg" class="h-10 dark:hidden">
+                        <img src="assets/svg/Magpie (dark).svg" class="h-10 hidden dark:block">
+                        <div>
+                            <h3 class="text-xl font-serif font-bold">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Be inspired. Keep creating.</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Melbourne's premier studio for digital and traditional style art.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/gabu_melbourne_art/" target="_blank" aria-label="Instagram" class="social-icon w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors shadow-sm">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/gabriel-guevara-p/" target="_blank" aria-label="LinkedIn" class="social-icon w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors shadow-sm">
+                            <i class="fab fa-linkedin-in text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Column -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Home</a></li>
+                        <li><a href="about.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">About</a></li>
+                        <li><a href="gallery.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Gallery</a></li>
+                        <li><a href="reviews.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Reviews</a></li>
+                        <li><a href="index.html#contact" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services Column -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="digital-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Digital Illustrations</a></li>
+                        <li><a href="traditional-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Traditional Art</a></li>
+                        <li><a href="coaching.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Art Coaching</a></li>
+                        <li><a href="commissions.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Custom Commissions</a></li>
+                        <li><a href="international.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">International Commissions</a></li>
+                    </ul>
+                </div>
+            
+            </div>
+            
+            <!-- SEO Text Section -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-8 mb-8">
+                <div class="max-w-6xl mx-auto">
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Melbourne Art Studio specializes in creating stunning digital illustrations, traditional artwork, and providing personalized art coaching services. I offer custom art commissions for
+                        individuals and businesses, and engaging coaching sessions for artists of all skill levels. Based in Melbourne, Australia, I work with clients globally to bring creative visions to 
+                        life through vibrant, meaningful artwork.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Copyright Section -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6 text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 md:mb-0">&copy; 2025 Melbourne Art Studio. All rights reserved.</p>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- AOS - Animate On Scroll Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/gallery.js"></script>
+    <script src="js/masonry-fix.js"></script>
+    
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+        
+        // Ensure theme toggle is initialized
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            initMobileMenu();
+        });
+    </script>
+</body>
+</html>

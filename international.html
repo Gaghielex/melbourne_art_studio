@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Early theme initialization to prevent flash -->
+    <script>
+        // Immediately apply theme preference before page renders
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Art Commissions - Melbourne Art Studio</title>
+    <meta name="description" content="Commission custom digital artwork from Gabriel, a Melbourne-based artist serving clients worldwide with personalized illustrations and digital paintings.">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- AOS - Animate On Scroll Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+</head>
+<body class="bg-light dark:bg-dark text-dark dark:text-light transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/90 dark:bg-dark/90 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 logo-hover">
+                <!-- Light mode logo (visible in light mode, hidden in dark mode) -->
+                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden">
+                <!-- Dark mode logo (hidden in light mode, visible in dark mode) -->
+                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block">
+                <span class="text-2xl font-serif font-bold tracking-tight">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="hover:text-primary transition-colors">Home</a>
+                <a href="about.html" class="hover:text-primary transition-colors">About</a>
+                <div class="relative group">
+                    <span class="cursor-pointer text-primary flex items-center">
+                        Services <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </span>
+                    <div class="absolute hidden group-hover:block hover:block bg-white dark:bg-dark shadow-lg rounded-md overflow-hidden min-w-[180px] z-50 mt-0">
+                        <div class="py-1">
+                            <a href="commissions.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Commissions</a>
+                            <a href="international.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors text-primary">International Commissions</a>
+                            <a href="coaching.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Art Coaching</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="gallery.html" class="hover:text-primary transition-colors">Gallery</a>
+                <a href="reviews.html" class="hover:text-primary transition-colors">Reviews</a>
+                <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
+            </div>
+            
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+            </button>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden bg-white dark:bg-dark shadow-lg absolute w-full left-0 py-4 px-6 mt-1 hidden">
+            <ul class="space-y-4">
+                <li><a href="index.html" class="block hover:text-primary transition-colors">Home</a></li>
+                <li><a href="about.html" class="block hover:text-primary transition-colors">About</a></li>
+                <li>
+                    <span class="block text-primary font-medium">Services</span>
+                    <ul class="pl-4 mt-2 space-y-0 border-l-2 border-gray-200 dark:border-gray-700">
+                        <li><a href="commissions.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Commissions</a></li>
+                        <li><a href="international.html" class="block text-primary py-2 px-2 rounded-md transition-colors">International Commissions</a></li>
+                        <li><a href="coaching.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Art Coaching</a></li>
+                    </ul>
+                </li>
+                <li><a href="gallery.html" class="block hover:text-primary transition-colors">Gallery</a></li>
+                <li><a href="reviews.html" class="block hover:text-primary transition-colors">Reviews</a></li>
+                <li><a href="index.html#contact" class="block hover:text-primary transition-colors">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6" data-aos="fade-up">International<br>Art Commissions</h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8" data-aos="fade-up" data-aos-delay="100">Digital artwork delivered to your inbox, anywhere in the world</p>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-light dark:from-dark to-transparent"></div>
+    </section>
+
+    <!-- International Commissions Content Section -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-12">                
+                <!-- Left Side: Commission Information -->
+                <div class="lg:w-1/2" data-aos="fade-right">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">International Art Commissions</h2>
+                    
+                    <div class="prose dark:prose-invert max-w-none prose-lg">
+                        <p class="mb-6">Distance is no barrier to creativity. As a Melbourne-based digital artist with international experience, I offer custom digital art commissions to clients worldwide. 
+                            Whether you're in Tokyo, Melbourne or anywhere else on the globe, I can create a unique piece of art tailored to your vision.</p>
+                        
+                        <h3 class="text-2xl font-serif font-bold mt-10 mb-4">Digital Art Services</h3>
+                        
+                        <p class="mb-4">My international commissions focus on digital artwork, which can be:</p>
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-start">
+                                <span>- High-resolution digital paintings for printing</span>
+                            </li>
+                            <li class="flex items-start"> 
+                                <span>- Character illustrations and portraits</span>
+                            </li>
+                            <li class="flex items-start">  
+                                <span>- Book and publication illustrations</span>
+                            </li>
+                            <li class="flex items-start">   
+                                <span>- Social media and website graphics</span>
+                            </li>
+                            <li class="flex items-start"> 
+                                <span>- Digital concept art</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span>- NFT artwork</span>
+                            </li>
+                        </ul>
+                        
+                        <p class="mb-4">Popular themes for my international commissions include:</p>
+                        <div class="grid grid-cols-2 gap-2 mb-6">
+                            <div class="flex items-center">
+                                <i class="fas fa-user-alt text-primary mr-2"></i>
+                                <span>Digital Portraits</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-primary mr-2"></i>
+                                <span>Family Illustrations</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-gamepad text-primary mr-2"></i>
+                                <span>Game Characters</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-book text-primary mr-2"></i>
+                                <span>Book Illustrations</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-building text-primary mr-2"></i>
+                                <span>Business Graphics</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-palette text-primary mr-2"></i>
+                                <span>Fantasy Art</span>
+                            </div>
+                        </div>                       
+                        <p class="mb-6">Browse examples of my digital artwork to see the style and quality you can expect:</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                            <a href="digital-art.html" class="inline-flex items-center px-6 py-3 bg-primary/10 dark:bg-primary/20 text-primary dark:text-white rounded-lg hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">
+                                <i class="fas fa-laptop-code mr-2"></i>
+                                Digital Artwork Gallery
+                            </a>
+                        </div>
+                        
+                        <h3 class="text-2xl font-serif font-bold mt-10 mb-4">Pricing</h3>
+                        <p class="mb-6 text-sm">Prices for international digital commissions vary based on complexity, size, and intended use. Payment is accepted via secure international methods including PayPal and bank transfers. Contact me for a personalized quote.</p>
+                    </div>
+                </div>
+                                <!--Right  Side: Image with Decorative Elements -->
+                <div class="lg:w-1/2" data-aos="fade-left">
+                    <div class="relative">
+                        <div class="w-full aspect-[3/4] bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl">
+                            <img src="assets/images/international_commissions.jpg" alt="Digital Art Commission Example - Melbourne Art Studio" class="object-cover w-full h-full object-[90%_center]" />
+                        </div>
+                        
+                        <!-- Decorative elements -->
+                        <div class="absolute -bottom-8 -right-8 w-48 h-48 bg-primary/10 dark:bg-primary/20 rounded-full blur-2xl"></div>
+                        <div class="absolute top-10 -left-10 w-28 h-28 bg-secondary/20 rounded-full blur-xl"></div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+                <!-- CTA Button -->
+            <div class="py-10 mt-10 text-center">
+                <a href="index.html#contact" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center">Start Your Commission<i class="fas fa-arrow-right ml-2"></i></a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Process Section -->
+    <section class="py-20 bg-gray-50 dark:bg-dark/80">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-2 text-center" data-aos="fade-up">International Commission Process</h2>
+            <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Seamless experience from any time zone</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="150">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-xl font-bold text-primary dark:text-white">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Online Consultation</h3>
+                    <p class="text-gray-600 dark:text-gray-300">We'll discuss your requirements via email, video call, or messaging platform at a time convenient for your time zone.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-xl font-bold text-gray-700 dark:text-primary">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Digital Concept</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I'll create digital sketches and share them securely online for your feedback and approval.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="250">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-xl font-bold text-primary dark:text-white">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Digital Creation</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I'll work on your artwork, providing progress updates through secure cloud sharing platforms.</p>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-xl font-bold text-gray-700 dark:text-primary">4</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Digital Delivery</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Final artwork is delivered in high-resolution digital files suitable for both web use and professional printing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+                <i class="fas fa-quote-left text-5xl text-primary/30 mb-6 block"></i>
+                <blockquote class="text-2xl md:text-3xl font-serif italic mb-8">
+                    "Working with Gabriel across continents was surprisingly smooth. His communication was excellent despite the time difference, and the digital portrait he created of my family exceeded all expectations. The quality is so high that when printed, it looks like an original painting."
+                </blockquote>
+                <div class="flex items-center justify-center">
+                    <div class="h-1 w-12 bg-primary mr-4"></div>
+                    <p class="font-medium">Keiko M., Tokyo, Japan</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-white dark:bg-dark">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-2 text-center" data-aos="fade-up">International Commission FAQs</h2>
+            <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Common questions about international digital commissions</p>
+            
+            <div class="max-w-3xl mx-auto space-y-6" data-aos="fade-up" data-aos-delay="150">
+                <!-- FAQ Item 1 -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-3">How do we handle time zone differences?</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I'm flexible with scheduling consultations and progress updates to accommodate your time zone. We can communicate via email, messaging apps, or schedule video calls at mutually convenient times.</p>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-3">What payment methods do you accept internationally?</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I accept PayPal, bank transfers, and other secure international payment methods.</p>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-3">Can I print the digital artwork locally?</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Yes! All digital commissions are delivered in high resolution formats suitable for printing. I can provide recommendations for print sizes and materials if needed.</p>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-3">What file formats do you deliver?</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I typically provide final artwork in multiple formats including high-resolution JPEG, PNG, PDF, and layered PSD files where appropriate. Files are delivered via secure cloud transfer services.</p>
+                </div>
+            </div>
+            
+            <!-- CTA Button -->
+            <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="200">
+                <a href="index.html#contact" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center">
+                    Commission Your Artwork <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-16 pb-8 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <!-- Footer Top Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Brand Column -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <div class="flex space-x-3">
+                        <img src="assets/svg/Magpie (light).svg" class="h-10 dark:hidden">
+                        <img src="assets/svg/Magpie (dark).svg" class="h-10 hidden dark:block">
+                        <div>
+                            <h3 class="text-xl font-serif font-bold">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Be inspired. Keep creating.</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Melbourne's premier studio for digital and traditional style art.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/gabu_melbourne_art/" target="_blank" aria-label="Instagram" class="social-icon w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors shadow-sm">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/gabriel-guevara-p/" target="_blank" aria-label="LinkedIn" class="social-icon w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors shadow-sm">
+                            <i class="fab fa-linkedin-in text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Column -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Home</a></li>
+                        <li><a href="about.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">About</a></li>
+                        <li><a href="gallery.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Gallery</a></li>
+                        <li><a href="reviews.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Reviews</a></li>
+                        <li><a href="index.html#contact" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services Column -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="digital-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Digital Illustrations</a></li>
+                        <li><a href="traditional-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Traditional Art</a></li>
+                        <li><a href="coaching.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Art Coaching</a></li>
+                        <li><a href="commissions.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Custom Commissions</a></li>
+                        <li><a href="international.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">International Commissions</a></li>
+                    </ul>
+                </div>
+            
+            </div>
+            
+            <!-- SEO Text Section -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-8 mb-8">
+                <div class="max-w-3xl mx-auto">
+                    <p class="text-sm text-center text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Melbourne Art Studio offers premium digital art commissions to clients worldwide. As an international digital artist based in Australia, Gabriel creates custom illustrations, portraits, and artwork that can be delivered digitally to any country. With experience working with clients across different time zones and cultures, we provide a seamless commissioning experience for art enthusiasts, businesses, and publishers globally.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Copyright Section -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6 text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400">&copy; 2025 Melbourne Art Studio. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AOS - Animate On Scroll Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/animations.js"></script>
+    
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    </script>
+</body>
+</html>

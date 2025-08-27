@@ -51,13 +51,314 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Gallery item hover effect */
-.gallery-item {
+/* Service cards hover effects */
+.service-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Testimonial card styles */
+.testimonial-card {
     transition: transform 0.3s ease;
 }
 
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-author-img {
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover .testimonial-author-img {
+    transform: scale(1.1);
+}
+
+/* For dark mode adjustments */
+.dark .testimonial-card {
+    background-color: rgba(31, 41, 55, 0.6);
+    backdrop-filter: blur(10px);
+}
+
+/* Gallery item hover effects */
+.gallery-item {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
 .gallery-item:hover {
-    transform: translateY(-10px);
+    transform: scale(1.03);
+}
+
+/* CTA (Call To Action) section styles */
+.cta-btn {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Contact form styles */
+.form-input:focus {
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
+
+/* Social media icons hover effects */
+.social-icon {
+    transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px);
+}
+
+/* Customer review carousel */
+.review-carousel {
+    transition: transform 0.5s ease;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #2d3748;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #4a5568;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #718096;
+}
+
+/* Custom styles for masonry layout and lightbox */
+.masonry-grid {
+    column-count: 2;
+    column-gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .masonry-grid {
+        column-count: 3;
+    }
+}
+
+@media (min-width: 1024px) {
+    .masonry-grid {
+        column-count: 4;
+    }
+}
+
+.masonry-item {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.lightbox-close:hover {
+    transform: scale(1.2);
+}
+
+.lightbox-prev, .lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 16px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease;
+}
+
+.lightbox-prev {
+    left: 20px;
+}
+
+.lightbox-next {
+    right: 20px;
+}
+
+.lightbox-prev:hover, .lightbox-next:hover {
+    background-color: rgba(79, 70, 229, 0.7);
+}
+
+/* Image hover effects */
+.gallery-item {
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-item img {
+    transition: transform 0.7s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Additional gallery styles and animations */
+.gallery-item {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Gallery image hover effects */
+.gallery-item img {
+    transform-origin: center;
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.gallery-item:hover img {
+    filter: brightness(1.05);
+}
+
+/* Masonry Gallery Layout */
+.masonry-gallery {
+    column-count: 1;
+    column-gap: 20px;
+}
+
+.masonry-item {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+    .masonry-gallery {
+        column-count: 2;
+        column-gap: 20px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .masonry-gallery {
+        column-count: 3;
+        column-gap: 24px;
+    }
+}
+
+/* Button hover effect with custom properties */
+[href="#"]:not(footer [href="#"]) {
+    --x-pos: 50%;
+    --y-pos: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+[href="#"]:not(footer [href="#"])::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--x-pos) var(--y-pos), rgba(255,255,255,0.2) 0%, transparent 50%);
+    transform: scale(0);
+    transition: transform 0.5s;
+    pointer-events: none;
+}
+
+[href="#"]:not(footer [href="#"]):hover::after {
+    transform: scale(2.5);
+}
+
+/* Lightbox animation */
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.lightbox-content {
+    animation: zoomIn 0.3s ease forwards;
 }
 
 /* Custom focus styles */
@@ -151,24 +452,44 @@ html {
     border-color: #4F46E5;
 }
 
-/* Footer link hover effect */
-.footer-link {
+/* Footer styling */
+footer {
     position: relative;
 }
 
-.footer-link:after {
+footer::before {
     content: '';
     position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -2px;
+    top: 0;
     left: 0;
-    background-color: #4F46E5;
-    transition: width 0.3s ease;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #4F46E5, #10B981);
 }
 
-.footer-link:hover:after {
-    width: 100%;
+/* Footer link hover effect - removed underline to match top nav */
+footer a {
+    transition: color 0.3s ease;
+}
+
+/* Social icons still need their specific hover effect */
+footer .social-icon {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+footer .social-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Social media icons hover effect */
+footer .social-icon {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+footer .social-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Page transitions */
@@ -246,6 +567,64 @@ html {
 [data-aos="fade-left"].aos-animate {
     opacity: 1;
     transform: translateX(0);
+}
+
+/* Reviews Carousel Styles */
+.reviews-carousel {
+    position: relative;
+    width: 100%;
+}
+
+.reviews-track {
+    display: flex;
+    width: 100%;
+}
+
+.review-slide {
+    flex: 0 0 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+/* Ensure equal height cards */
+.review-slide > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Pagination dots */
+.pagination-dot {
+    transition: opacity 0.3s ease, width 0.3s ease, background-color 0.3s ease;
+}
+
+.pagination-dot.active {
+    background-color: rgb(79, 70, 229);
+    width: 32px;
+}
+
+/* Carousel navigation buttons */
+#prev-review, #next-review {
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#prev-review:hover, #next-review:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Responsive adjustments for the carousel */
+@media (min-width: 768px) {
+    .review-slide {
+        flex: 0 0 33.333%;
+    }
+}
+
+@media (max-width: 767px) {
+    #prev-review, #next-review {
+        padding: 8px;
+    }
 }
 
 [data-aos-delay="100"] {
