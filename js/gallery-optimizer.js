@@ -13,6 +13,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Your Cloudinary cloud name
   const cloudName = 'dggsqryu1';
   
+  // Map of problematic images with their direct Cloudinary URLs
+  // These are direct URLs to your manually uploaded images in Cloudinary
+  const directCloudinaryImages = {
+    'assets/images/Digital Illustrations/Celebrations_in_Japan_A3.png': 'https://res.cloudinary.com/dggsqryu1/image/upload/v1693823775/celebrations-japan',
+    'assets/images/Digital Illustrations/Digital-koi.png': 'https://res.cloudinary.com/dggsqryu1/image/upload/v1693823775/digital-koi',
+    'assets/images/Digital Illustrations/Anime_Mashup.png': 'https://res.cloudinary.com/dggsqryu1/image/upload/v1693823775/anime-mashup'
+  };
+  
   // Track loading status for better UX
   let totalImages = 0;
   let loadedImages = 0;
@@ -31,21 +39,38 @@ document.addEventListener('DOMContentLoaded', function() {
     // Skip if already processed
     if (originalSrc.includes('res.cloudinary.com')) return;
     
-    // Create the absolute URL to the image on GitHub Pages
-    const fullImagePath = originalSrc.startsWith('http') 
-      ? originalSrc 
-      : `${baseUrl}/${originalSrc}`;
-    
-    // Create Cloudinary URLs for different sizes
-    const cloudinaryBase = `https://res.cloudinary.com/${cloudName}/image/fetch`;
-    
-    // Create optimized versions with quality and format auto-detection
-    const smallImage = `${cloudinaryBase}/w_400,q_auto,f_auto/${fullImagePath}`;
-    const mediumImage = `${cloudinaryBase}/w_800,q_auto,f_auto/${fullImagePath}`;
-    const largeImage = `${cloudinaryBase}/w_1600,q_auto,f_auto/${fullImagePath}`;
-    
     // Store original src for fallback
     img.setAttribute('data-original-src', originalSrc);
+    
+    // Variables for different image sizes
+    let smallImage, mediumImage, largeImage;
+    
+    // Check if this is one of our problematic images that needs direct URLs
+    if (directCloudinaryImages[originalSrc]) {
+      console.log('Using direct Cloudinary URL for:', originalSrc);
+      
+      // Use the direct URL from Cloudinary upload
+      const directUrl = directCloudinaryImages[originalSrc];
+      
+      // Create responsive versions with Cloudinary transformations
+      smallImage = `${directUrl}/w_400,q_auto,f_auto`;
+      mediumImage = `${directUrl}/w_800,q_auto,f_auto`;
+      largeImage = `${directUrl}/w_1600,q_auto,f_auto`;
+    } else {
+      // Standard approach for other images
+      // Create the absolute URL to the image on GitHub Pages
+      const fullImagePath = originalSrc.startsWith('http') 
+        ? originalSrc 
+        : `${baseUrl}/${originalSrc}`;
+      
+      // Create Cloudinary URLs for different sizes
+      const cloudinaryBase = `https://res.cloudinary.com/${cloudName}/image/fetch`;
+      
+      // Create optimized versions with quality and format auto-detection
+      smallImage = `${cloudinaryBase}/w_400,q_auto,f_auto/${fullImagePath}`;
+      mediumImage = `${cloudinaryBase}/w_800,q_auto,f_auto/${fullImagePath}`;
+      largeImage = `${cloudinaryBase}/w_1600,q_auto,f_auto/${fullImagePath}`;
+    }
     
     // Update the image with responsive sources
     img.setAttribute('src', smallImage);
