@@ -21,6 +21,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/nav-fixes.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Tailwind Config -->
@@ -57,10 +58,10 @@
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2 logo-hover">
                 <!-- Light mode logo (visible in light mode, hidden in dark mode) -->
-                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden">
+                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden logo-img">
                 <!-- Dark mode logo (hidden in light mode, visible in dark mode) -->
-                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block">
-                <span class="text-2xl font-serif font-bold tracking-tight">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
+                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block logo-img">
+                <span class="text-2xl font-serif font-bold tracking-tight logo-text">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
             </a>
             
             <!-- Desktop Menu -->
@@ -84,16 +85,18 @@
                 <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
             </div>
             
-            <!-- Theme Toggle Button -->
-            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
-                <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
-            </button>
-            
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="flex items-center space-x-2 nav-controls">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                    <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+                </button>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
         
         <!-- Mobile Menu -->
@@ -190,7 +193,7 @@
 
                 <!-- CTA Button -->
                     <div class="mt-10">
-                    <a href="#contact" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full transition-colors">Work With Me<i class="fas fa-arrow-right ml-2"></i></a>
+                    <a href="index.html#contact" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full transition-colors">Work With Me<i class="fas fa-arrow-right ml-2"></i></a>
                     </div>
             </div>
             </div>
@@ -272,6 +275,7 @@
     <!-- Custom JavaScript -->
     <script src="js/main.js"></script>
     <script src="js/animations.js"></script>
+    <script src="js/mobile-fixes.js"></script>
     
     <!-- Initialize AOS -->
     <script>

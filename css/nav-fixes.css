@@ -1,0 +1,65 @@
+/* Navigation fixes for mobile and consistency */
+
+/* Logo text size adjustments for mobile */
+@media (max-width: 768px) {
+  nav .logo-text {
+    font-size: 1rem !important; /* Even smaller for mobile */
+    white-space: nowrap !important;
+  }
+  
+  nav img.logo-img {
+    height: 1.75rem !important;
+  }
+  
+  nav .container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Fix horizontal scrolling */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100%;
+    position: relative;
+    max-width: 100vw;
+  }
+  
+  .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Ensure spacing between logo and controls */
+  nav .flex.justify-between {
+    gap: 0.25rem !important;
+  }
+}
+
+/* Ensure mobile menu has proper backdrop and positioning */
+#mobile-menu {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* Fix for theme toggle and menu buttons alignment */
+.nav-controls {
+  display: flex;
+  align-items: center;
+}
+
+/* Adjust logo spacing on small screens */
+@media (max-width: 360px) {
+  .logo-hover {
+    gap: 0.25rem !important;
+  }
+  
+  .logo-text {
+    font-size: 0.875rem !important;
+  }
+}

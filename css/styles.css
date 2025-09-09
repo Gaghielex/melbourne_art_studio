@@ -46,9 +46,11 @@
     }
 }
 
-/* Smooth scrolling */
-html {
+/* Smooth scrolling and overflow prevention */
+html, body {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 /* Service cards hover effects */
@@ -156,8 +158,6 @@ html {
 .masonry-grid {
     column-count: 2;
     column-gap: 20px;
-    position: relative;
-    min-height: 200px;
 }
 
 @media (min-width: 768px) {
@@ -169,13 +169,6 @@ html {
 @media (min-width: 1024px) {
     .masonry-grid {
         column-count: 4;
-    }
-}
-
-/* Optimize mobile display for gallery grid */
-@media (max-width: 480px) {
-    .masonry-grid {
-        column-count: 1; /* Single column for very small screens */
     }
 }
 
@@ -306,8 +299,6 @@ html {
 .masonry-gallery {
     column-count: 1;
     column-gap: 20px;
-    position: relative;
-    min-height: 200px;
 }
 
 .masonry-item {
@@ -315,29 +306,6 @@ html {
     width: 100%;
     break-inside: avoid;
     margin-bottom: 20px;
-}
-
-/* Loading state styling */
-.masonry-gallery.loading::before,
-.masonry-grid.loading::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    border: 3px solid rgba(79, 70, 229, 0.2);
-    border-top-color: #4F46E5;
-    border-radius: 50%;
-    animation: spinner 1s ease-in-out infinite;
-    z-index: 10;
-}
-
-@keyframes spinner {
-    to {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
 }
 
 @media (min-width: 768px) {
@@ -351,18 +319,6 @@ html {
     .masonry-gallery {
         column-count: 3;
         column-gap: 24px;
-    }
-}
-
-/* Add better mobile optimization for gallery items */
-@media (max-width: 640px) {
-    .gallery-item {
-        transform: none !important;
-        margin-bottom: 15px;
-    }
-    
-    .gallery-item img {
-        border-radius: 8px;
     }
 }
 

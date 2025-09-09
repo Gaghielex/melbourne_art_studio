@@ -20,6 +20,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/nav-fixes.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Tailwind Config -->
@@ -56,10 +57,10 @@
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-2 logo-hover">
                 <!-- Light mode logo (visible in light mode, hidden in dark mode) -->
-                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden">
+                <img src="assets/svg/Magpie (light).svg" alt="Melbourne Art Studio" class="h-10 dark:hidden logo-img">
                 <!-- Dark mode logo (hidden in light mode, visible in dark mode) -->
-                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block">
-                <span class="text-2xl font-serif font-bold tracking-tight">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
+                <img src="assets/svg/Magpie (dark).svg" alt="Melbourne Art Studio" class="h-10 hidden dark:block logo-img">
+                <span class="text-2xl font-serif font-bold tracking-tight logo-text">Melbourne <span class="text-gray-700 font-medium dark:text-gray-300">ArtStudio</span></span>
             </a>
             
             <!-- Desktop Menu -->
@@ -83,7 +84,7 @@
                 <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
             </div>
             
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2 nav-controls">
                 <!-- Theme Toggle Button -->
                 <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                     <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
@@ -98,22 +99,22 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-dark shadow-md">
-            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                <a href="#home" class="hover:text-primary transition-colors">Home</a>
-                <a href="about.html" class="hover:text-primary transition-colors">About</a>
-                <div class="flex flex-col">
-                    <span class="hover:text-primary transition-colors font-medium">Services</span>
-                    <div class="pl-4 mt-2 space-y-0 border-l-2 border-gray-200 dark:border-gray-700">
-                        <a href="commissions.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Commissions</a>
-                        <a href="international.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">International Commissions</a>
-                        <a href="coaching.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Art Coaching</a>
-                    </div>
-                </div>
-                <a href="gallery.html" class="hover:text-primary transition-colors">Gallery</a>
-                <a href="reviews.html" class="hover:text-primary transition-colors">Reviews</a>
-                <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
-            </div>
+        <div id="mobile-menu" class="md:hidden bg-white dark:bg-dark shadow-lg absolute w-full left-0 py-4 px-6 mt-1 hidden">
+            <ul class="space-y-4">
+                <li><a href="#home" class="block text-primary">Home</a></li>
+                <li><a href="about.html" class="block hover:text-primary transition-colors">About</a></li>
+                <li>
+                    <span class="block hover:text-primary transition-colors font-medium">Services</span>
+                    <ul class="pl-4 mt-2 space-y-0 border-l-2 border-gray-200 dark:border-gray-700">
+                        <li><a href="commissions.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Commissions</a></li>
+                        <li><a href="international.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">International Commissions</a></li>
+                        <li><a href="coaching.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Art Coaching</a></li>
+                    </ul>
+                </li>
+                <li><a href="gallery.html" class="block hover:text-primary transition-colors">Gallery</a></li>
+                <li><a href="reviews.html" class="block hover:text-primary transition-colors">Reviews</a></li>
+                <li><a href="#contact" class="block hover:text-primary transition-colors">Contact</a></li>
+            </ul>
         </div>
     </nav>
 
@@ -586,6 +587,7 @@
     <!-- Custom JavaScript -->
     <script src="js/main.js"></script>
     <script src="js/animations.js"></script>
+    <script src="js/mobile-fixes.js"></script>
     
     <!-- Initialize AOS -->
     <script>
