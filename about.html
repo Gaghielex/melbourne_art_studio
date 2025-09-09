@@ -22,6 +22,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/nav-fixes.css">
+    <link rel="stylesheet" href="css/gallery-fixes.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Tailwind Config -->
@@ -100,7 +101,7 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden bg-white dark:bg-dark shadow-lg absolute w-full left-0 py-4 px-6 mt-1 hidden">
+        <div id="mobile-menu" class="md:hidden bg-white dark:bg-dark shadow-lg fixed w-full left-0 py-4 px-6 mt-1 hidden" style="z-index:100;">
             <ul class="space-y-4">
                 <li><a href="index.html" class="block hover:text-primary transition-colors">Home</a></li>
                 <li><a href="about.html" class="block text-primary">About</a></li>

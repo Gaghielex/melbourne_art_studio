@@ -142,7 +142,8 @@ function updateLightboxFunctionality() {
       
       // Show the lightbox
       lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden'; // Prevent scrolling
+      // Don't completely block scrolling as it causes issues
+      document.body.style.overflowY = 'auto'; 
       
       // Store current index for navigation
       window.currentImageIndex = index;

@@ -51,7 +51,7 @@ function initLightbox() {
     if (lightboxClose) {
         lightboxClose.addEventListener('click', () => {
             lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto'; // Enable scrolling
+            document.body.style.overflow = ''; // Reset to default value instead of forcing
         });
     }
     
@@ -79,7 +79,7 @@ function initLightbox() {
         
         if (e.key === 'Escape') {
             lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
         } else if (e.key === 'ArrowLeft') {
             currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
             lightboxImage.src = galleryImages[currentImageIndex].src;

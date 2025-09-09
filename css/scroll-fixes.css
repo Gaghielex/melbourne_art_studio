@@ -1,0 +1,63 @@
+/* Scroll Fixes for Melbourne Art Studio Website */
+
+/* Prevent horizontal overflow on all containers */
+body, html {
+    overflow-x: hidden !important;
+    width: 100%;
+    position: relative;
+}
+
+/* Fix for masonry gallery loading state */
+.masonry-gallery.loading {
+    min-height: 400px;
+    position: relative;
+}
+
+/* Ensure sections don't create independent scroll contexts */
+section {
+    overflow: visible !important;
+}
+
+/* Fix for sections with overflow-hidden that might cause issues */
+section.overflow-hidden {
+    overflow: hidden !important;
+    overflow-y: visible !important;
+}
+
+/* Prevent independent scrolling in reviews carousel */
+.reviews-carousel {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+}
+
+/* Fix for masonry items */
+.masonry-item {
+    overflow: visible !important;
+}
+
+/* Fix AOS animation interference with scrolling */
+[data-aos] {
+    pointer-events: none;
+}
+
+/* Restore pointer events after animation */
+[data-aos].aos-animate {
+    pointer-events: auto;
+}
+
+/* Fix for gallery loading states */
+.gallery-item {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Ensure carousel tracks don't interfere with page scrolling */
+.reviews-track {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* Prevent image loading flicker */
+img {
+    backface-visibility: hidden;
+}

@@ -163,30 +163,53 @@ function initParallaxEffect() {
     // Add parallax effect to hero section background or other elements
     const parallaxElements = document.querySelectorAll('.parallax');
     
+    // Use requestAnimationFrame for smoother scrolling performance
+    let ticking = false;
+    let lastScrollY = window.scrollY;
+    
     window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
+        lastScrollY = window.scrollY;
         
-        parallaxElements.forEach(element => {
-            const speed = element.getAttribute('data-speed') || 0.2;
-            element.style.transform = `translateY(${scrollY * speed}px)`;
-        });
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                parallaxElements.forEach(element => {
+                    // Reduce speed to minimize scroll interference
+                    const speed = (parseFloat(element.getAttribute('data-speed')) || 0.2) * 0.5;
+                    element.style.transform = `translateY(${lastScrollY * speed}px)`;
+                });
+                ticking = false;
+            });
+            
+            ticking = true;
+        }
     });
     
-    // Mouse move parallax for specific elements
+    // Mouse move parallax for specific elements - with performance improvements
     const mouseParallax = document.querySelectorAll('.mouse-parallax');
     
-    document.addEventListener('mousemove', (e) => {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+    if (mouseParallax.length > 0) {
+        let mouseX = 0;
+        let mouseY = 0;
+        let rafId = null;
         
-        mouseParallax.forEach(element => {
-            const speed = element.getAttribute('data-speed') || 0.05;
-            const x = (window.innerWidth / 2 - mouseX) * speed;
-            const y = (window.innerHeight / 2 - mouseY) * speed;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
             
-            element.style.transform = `translate(${x}px, ${y}px)`;
+            if (!rafId) {
+                rafId = window.requestAnimationFrame(() => {
+                    mouseParallax.forEach(element => {
+                        const speed = (parseFloat(element.getAttribute('data-speed')) || 0.05) * 0.5;
+                        const x = (window.innerWidth / 2 - mouseX) * speed;
+                        const y = (window.innerHeight / 2 - mouseY) * speed;
+                        
+                        element.style.transform = `translate(${x}px, ${y}px)`;
+                    });
+                    rafId = null;
+                });
+            }
         });
-    });
+    }
 }
 
 // Reviews Carousel

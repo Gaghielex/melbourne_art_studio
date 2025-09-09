@@ -649,6 +649,7 @@
     
     <!-- Custom JavaScript -->
     <script src="js/main.js"></script>
+    <script src="js/scroll-fixes.js"></script>
     <script src="js/animations.js"></script>
     <script src="js/mobile-fixes.js"></script>
     
@@ -656,9 +657,12 @@
     <script>
         AOS.init({
             duration: 800,
-            easing: 'ease-in-out',
+            easing: 'ease-out',
             once: true,
-            mirror: false
+            mirror: false,
+            disable: 'mobile',
+            throttleDelay: 99,
+            offset: 120
         });
     </script>
     

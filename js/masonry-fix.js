@@ -56,7 +56,8 @@ function initMasonryGallery() {
             galleryContainer.style.transition = 'opacity 0.3s ease-in';
             galleryContainer.style.opacity = '1';
             
-            // Force browser to recalculate layout if needed
+            // Force browser to recalculate layout if needed and prevent overflow issues
+            document.getElementById('gallery').classList.add('overflow-hidden-important');
             if (typeof AOS !== 'undefined') {
                 AOS.refresh();
             }
