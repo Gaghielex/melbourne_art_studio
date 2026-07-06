@@ -22,6 +22,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/nav-fixes.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Tailwind Config -->
@@ -67,20 +68,20 @@
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-8">
                 <a href="#home" class="hover:text-primary transition-colors">Home</a>
-                <a href="about.html" class="hover:text-primary transition-colors">About</a>
+                <a href="/about/" class="hover:text-primary transition-colors">About</a>
                 <div class="relative group">
                     <span class="cursor-pointer hover:text-primary transition-colors flex items-center">
                         Services <i class="fas fa-chevron-down ml-1 text-xs"></i>
                     </span>
                     <div class="absolute hidden group-hover:block hover:block bg-white dark:bg-dark shadow-lg rounded-md overflow-hidden min-w-[180px] z-50 mt-0">
                         <div class="py-1">
-                            <a href="commissions.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Commissions</a>
-                            <a href="international.html" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">International Commissions</a>
+                            <a href="/commissions/" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">Commissions</a>
+                            <a href="/international/" class="block px-4 py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors">International Commissions</a>
                         </div>
                     </div>
                 </div>
-                <a href="gallery.html" class="hover:text-primary transition-colors">Gallery</a>
-                <a href="reviews.html" class="hover:text-primary transition-colors">Reviews</a>
+                <a href="/gallery/" class="hover:text-primary transition-colors">Gallery</a>
+                <a href="/reviews/" class="hover:text-primary transition-colors">Reviews</a>
                 <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
             </div>
             
@@ -101,16 +102,16 @@
         <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-dark shadow-md">
             <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
                 <a href="#home" class="hover:text-primary transition-colors">Home</a>
-                <a href="about.html" class="hover:text-primary transition-colors">About</a>
+                <a href="/about/" class="hover:text-primary transition-colors">About</a>
                 <div class="flex flex-col">
                     <span class="hover:text-primary transition-colors font-medium">Services</span>
                     <div class="pl-4 mt-2 space-y-0 border-l-2 border-gray-200 dark:border-gray-700">
-                        <a href="commissions.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Commissions</a>
-                        <a href="international.html" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">International Commissions</a>
+                        <a href="/commissions/" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">Commissions</a>
+                        <a href="/international/" class="block hover:bg-primary hover:text-white dark:hover:bg-primary py-2 px-2 rounded-md transition-colors">International Commissions</a>
                     </div>
                 </div>
-                <a href="gallery.html" class="hover:text-primary transition-colors">Gallery</a>
-                <a href="reviews.html" class="hover:text-primary transition-colors">Reviews</a>
+                <a href="/gallery/" class="hover:text-primary transition-colors">Gallery</a>
+                <a href="/reviews/" class="hover:text-primary transition-colors">Reviews</a>
                 <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
             </div>
         </div>
@@ -130,7 +131,7 @@
             <p class="md:text-2xl max-w-2xl mx-auto mb-10 opacity-0 translate-y-10 animate-fade-in-up animation-delay-300">Custom artworks and international digital commissions with Melbourne-based artist Gabriel.</p>
             <div class="flex flex-col sm:flex-row justify-center items-center sm:space-x-4 space-y-3 sm:space-y-0 opacity-0 translate-y-10 animate-fade-in-up animation-delay-600">
                 <a href="#contact" class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full transition-colors text-center"><i class="fas fa-paint-brush mr-2"></i><span>Commission Me</span></a>
-                <a href="gallery.html" class="w-full sm:w-auto border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors text-center"><i class="fas fa-image mr-2"></i><span>View Gallery</span></a>
+                <a href="/gallery/" class="w-full sm:w-auto border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors text-center"><i class="fas fa-image mr-2"></i><span>View Gallery</span></a>
             </div>
         </div>
     </section>
@@ -164,7 +165,7 @@
                         </div>
                     </div>
                     <div class="py-6">
-                        <a href="about.html" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center">Read More <i class="fas fa-arrow-right ml-2"></i></a>
+                        <a href="/about/" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center">Read More <i class="fas fa-arrow-right ml-2"></i></a>
                     </div>
                     
                     
@@ -190,7 +191,7 @@
                         <h3 class="text-xl font-bold mb-4">Custom Artworks</h3>
                         <div class="w-16 h-1 bg-primary mx-auto mb-4"></div>
                         <p class="text-gray-600 dark:text-gray-300 mb-6">Commission unique artworks tailored to your vision. From paintings to digital prints, bring your ideas to life.</p>
-                        <a href="commissions.html" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
+                        <a href="/commissions/" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
                             Learn More <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -206,7 +207,7 @@
                         <h3 class="text-xl font-bold mb-4">International Commissions</h3>
                         <div class="w-16 h-1 bg-primary mx-auto mb-4"></div>
                         <p class="text-gray-600 dark:text-gray-300 mb-6">Distance is no barrier. I work with clients worldwide to create beautiful illustrations anywhere you are.</p>
-                        <a href="international.html" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
+                        <a href="/international/" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
                             Learn More <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -293,7 +294,7 @@
             
             <!-- Gallery Button -->
             <div class="text-center text-lg mt-16" data-aos="fade-up" data-aos-delay="600">
-                <a href="gallery.html" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
+                <a href="/gallery/" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
                     Explore Full Gallery<i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>
@@ -312,7 +313,23 @@
                 <div class="reviews-carousel overflow-hidden">
                     <div class="reviews-track flex transition-transform duration-500 ease-out">
                         <!-- Review 1 -->
-                         <div class="review-slide min-w-full md:min-w-[33.333%] px-4">
+                        <div class="review-slide min-w-full md:min-w-[33.333%] px-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md h-full transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                        MC
+                                    </div>
+                                    <div class="ml-3">
+                                        <h4 class="font-bold text-gray-900 dark:text-white">Michael C.</h4>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Melbourne, Australia</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Gabriel recently completed a custom watercolour for me to gift to my wife on our wedding day. He took the time to understand the brief and painted the artwork in the style of my partner’s late grandmother. His communication throughout the process was second to none and the completed piece is exquisite. I cannot thank Gabriel enough and would recommend him highly to anyone."</p>
+                            </div>
+                        </div>
+
+                        <!-- Review 2 -->
+                        <div class="review-slide min-w-full md:min-w-[33.333%] px-4">
                             <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md h-full transform transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
                                 <div class="flex items-center">
                                     <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
@@ -323,8 +340,8 @@
                                         <p class="text-sm text-gray-500 dark:text-gray-400">Florida, USA</p>
                                     </div>
                                 </div>
-                                <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Gabriel’s work was amazing. He made me an acrylic portrait and I cannot stop looking at it. 
-                                    It’s truly amazing and I would recommend everyone to get art from him."</p>                                
+                                <p class="text-gray-700 dark:text-gray-300 mb-6 italic py-4">"Gabriel’s work was amazing. He made me an acrylic portrait and I cannot stop looking at it.
+                                    It’s truly amazing and I would recommend everyone to get art from him."</p>
                             </div>
                         </div>
                         
@@ -416,9 +433,11 @@
                                     color and subjects and didn't even know what medium I wanted. After lots of conversations, he was able to create a beautiful digital piece that surpassed all my expectations. It's perfect, and I love it! Thank you!!"</p>                                
                             </div>
                         </div>
+                        </div>
+
                     </div>
                 </div>
-                
+
                 <!-- Carousel Navigation -->
                 <button class="absolute top-1/2 left-2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-full p-2 shadow-md focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors z-10" id="prev-review">
                     <i class="fas fa-chevron-left text-primary"></i>
@@ -433,12 +452,13 @@
                     <button class="h-2 w-8 bg-primary/30 rounded-full pagination-dot" data-index="1"></button>
                     <button class="h-2 w-8 bg-primary/30 rounded-full pagination-dot" data-index="2"></button>
                     <button class="h-2 w-8 bg-primary/30 rounded-full pagination-dot" data-index="3"></button>
+                    <button class="h-2 w-8 bg-primary/30 rounded-full pagination-dot" data-index="4"></button>
                 </div>
             </div>
             
             <!-- See All Reviews Button -->
             <div class="text-center text-lg mt-16" data-aos="fade-up" data-aos-delay="600">
-                <a href="reviews.html" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
+                <a href="/reviews/" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-6 py-2 rounded-full transition-colors inline-flex items-center">
                             See All Reviews<i class="fas fa-arrow-right ml-2"></i>
                         </a>
             </div>
@@ -536,10 +556,10 @@
                 <div>
                     <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Navigation</h4>
                     <ul class="space-y-2">
-                        <li><a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Home</a></li>
-                        <li><a href="about.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">About</a></li>
-                        <li><a href="gallery.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Gallery</a></li>
-                        <li><a href="reviews.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Reviews</a></li>
+                        <li><a href="/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Home</a></li>
+                        <li><a href="/about/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">About</a></li>
+                        <li><a href="/gallery/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Gallery</a></li>
+                        <li><a href="/reviews/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Reviews</a></li>
                         <li><a href="#contact" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Contact</a></li>
                     </ul>
                 </div>
@@ -548,10 +568,10 @@
                 <div>
                     <h4 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Services</h4>
                     <ul class="space-y-2">
-                        <li><a href="digital-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Digital Illustrations</a></li>
-                        <li><a href="traditional-art.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Traditional Art</a></li>
-                        <li><a href="commissions.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Custom Commissions</a></li>
-                        <li><a href="international.html" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">International Commissions</a></li>
+                        <li><a href="/digital-art/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Digital Illustrations</a></li>
+                        <li><a href="/traditional-art/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Traditional Art</a></li>
+                        <li><a href="/commissions/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">Custom Commissions</a></li>
+                        <li><a href="/international/" class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">International Commissions</a></li>
                     </ul>
                 </div>
             
