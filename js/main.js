@@ -158,57 +158,45 @@ function initGalleryLoadMore() {
     
     // Initialize lightbox functionality
     function openLightbox(src, alt, title, medium) {
-        // Create lightbox container
         const lightbox = document.createElement('div');
-        lightbox.className = 'fixed inset-0 bg-black/90 z-50 flex items-center justify-center opacity-0 transition-opacity duration-300';
-        lightbox.style.backdropFilter = 'blur(5px)';
-        
-        // Create lightbox content
+        lightbox.style.cssText = 'position:fixed;inset:0;background:#0a0a10;display:flex;flex-direction:column;z-index:1000;opacity:0;transition:opacity 0.25s ease;';
+
         lightbox.innerHTML = `
-            <div class="relative max-w-4xl mx-auto p-4 w-full">
-                <button class="absolute top-4 right-4 text-white text-3xl hover:text-primary transition-colors z-10">&times;</button>
-                <div class="relative">
-                    <img src="${src}" alt="${alt}" class="max-h-[80vh] max-w-full mx-auto rounded-lg shadow-2xl">
-                    <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4 rounded-b-lg">
-                        <h3 class="text-xl font-bold">${title}</h3>
-                        <p class="text-gray-300">${medium}</p>
-                    </div>
+            <div style="position:absolute;top:16px;left:18px;color:#fff;font-size:12px;letter-spacing:0.08em;z-index:10;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);padding:5px 12px;border-radius:999px;">1 / 1</div>
+            <button id="hlb-close" aria-label="Close" style="position:absolute;top:12px;right:16px;width:38px;height:38px;border:1px solid rgba(255,255,255,0.3);border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;"><i class="fas fa-times"></i></button>
+            <div id="hlb-wrap" style="flex:1;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;min-height:0;">
+                <div style="position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,#13131c);z-index:2;pointer-events:none;"></div>
+                <div style="position:absolute;inset:-40px;background-image:url('${src}');background-size:cover;background-position:center;filter:blur(40px) brightness(0.45) saturate(1.6);z-index:0;"></div>
+                <img src="${src}" alt="${alt}" style="position:relative;max-width:100%;max-height:calc(100vh - 160px);object-fit:contain;z-index:1;border-radius:2px;box-shadow:0 12px 60px rgba(0,0,0,0.6);">
+            </div>
+            <div style="flex-shrink:0;overflow-y:auto;padding:22px 28px 32px;background:#13131c;border-top:1px solid rgba(255,255,255,0.07);">
+                <div style="margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:3px 12px;">${medium}</span>
                 </div>
+                <h3 style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2rem);color:#fff;font-weight:700;margin:0 0 8px;">${title}</h3>
             </div>
         `;
-        
-        // Add to body
+
         document.body.appendChild(lightbox);
-        document.body.classList.add('overflow-hidden');
-        
-        // Fade in
-        setTimeout(() => {
-            lightbox.classList.add('opacity-100');
-        }, 10);
-        
-        // Close on click
-        const closeBtn = lightbox.querySelector('button');
-        closeBtn.addEventListener('click', () => {
-            lightbox.classList.remove('opacity-100');
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(() => { lightbox.style.opacity = '1'; }, 10);
+
+        function closeLightbox() {
+            lightbox.style.opacity = '0';
             setTimeout(() => {
                 document.body.removeChild(lightbox);
-                document.body.classList.remove('overflow-hidden');
-            }, 300);
+                document.body.style.overflow = '';
+            }, 250);
+        }
+
+        lightbox.querySelector('#hlb-close').addEventListener('click', closeLightbox);
+        lightbox.querySelector('#hlb-wrap').addEventListener('click', (e) => {
+            if (e.target === lightbox.querySelector('#hlb-wrap')) closeLightbox();
         });
-        
-        // Close on escape key
+
         document.addEventListener('keydown', function escClose(e) {
-            if (e.key === 'Escape') {
-                closeBtn.click();
-                document.removeEventListener('keydown', escClose);
-            }
-        });
-        
-        // Close on background click
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) {
-                closeBtn.click();
-            }
+            if (e.key === 'Escape') { closeLightbox(); document.removeEventListener('keydown', escClose); }
         });
     }
     

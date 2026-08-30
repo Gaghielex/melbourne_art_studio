@@ -11,8 +11,8 @@ PAGES = [
     'traditional-art',
 ]
 
-# Prepend / to any href/src value that isn't already absolute or an anchor/data URI
-REL_ATTR = re.compile(r'((?:href|src)=")(?!https?://|//|/|#|mailto:|tel:|data:)')
+# Prepend / to any href/src/data-full value that isn't already absolute or an anchor/data URI
+REL_ATTR = re.compile(r'((?:href|src|data-full)=")(?!https?://|//|/|#|mailto:|tel:|data:)')
 
 
 def make_absolute(content):

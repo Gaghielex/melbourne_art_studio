@@ -552,54 +552,100 @@
                 <div class="md:w-1/2">
                     <form id="contact-form" class="space-y-4" action="https://formspree.io/f/xyzdyady" method="POST">
                         <div>
-                            <label for="name" class="block mb-2 font-medium">Name</label>
+                            <label for="name" class="block mb-2 font-medium">Name <span class="text-primary">*</span></label>
                             <input type="text" id="name" name="name" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" required>
                         </div>
                         <div>
-                            <label for="email" class="block mb-2 font-medium">Email</label>
+                            <label for="email" class="block mb-2 font-medium">Email <span class="text-primary">*</span></label>
                             <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            <p id="email-error" class="hidden mt-1 text-sm text-fuchsia-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address.</p>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="commission-type" class="block mb-2 font-medium">Commission Type</label>
-                                <select id="commission-type" name="commission_type" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700 dark:text-gray-300">
-                                    <option value="">Select…</option>
-                                    <option value="Digital">Digital</option>
-                                    <option value="Traditional Artwork">Traditional Artwork</option>
-                                    <option value="Other">Other</option>
-                                </select>
+
+                        <!-- Optional commission detail fields -->
+                        <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4 space-y-4">
+                            <p class="text-sm text-gray-500 dark:text-gray-400 flex items-start gap-2">
+                                <i class="fas fa-lightbulb text-secondary mt-0.5 flex-shrink-0"></i>
+                                <span>These details are optional but help me understand the scope of your piece and speed up the price estimation process.</span>
+                            </p>
+                            <!-- Row 1: Commission Type | Size -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block mb-2 font-medium text-sm">Commission Type</label>
+                                    <div class="custom-select relative" data-name="commission_type">
+                                        <input type="hidden" name="commission_type" value="">
+                                        <button type="button" class="cs-trigger w-full pl-3 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-left shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between">
+                                            <span class="cs-label text-gray-400 dark:text-gray-500">Select…</span>
+                                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-500 text-xs cs-icon transition-transform duration-200"></i>
+                                        </button>
+                                        <div class="cs-panel hidden absolute left-0 right-0 top-full mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden z-50 border border-gray-100 dark:border-gray-700">
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Digital">Digital</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Traditional Artwork">Traditional Artwork</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Other">Other</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="size" class="block mb-2 font-medium text-sm">Size of Artwork</label>
+                                    <div class="relative">
+                                        <input type="text" id="size" name="size_cm" placeholder="e.g. 30 × 40" class="w-full pl-3 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
+                                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400 dark:text-gray-500 pointer-events-none">cm</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label for="medium" class="block mb-2 font-medium">Medium</label>
-                                <select id="medium" name="medium" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700 dark:text-gray-300">
-                                    <option value="">Select…</option>
-                                    <option value="Digital">Digital</option>
-                                    <option value="Watercolours">Watercolours</option>
-                                    <option value="Acrylics">Acrylics</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                            <!-- Row 2: Medium | Estimated Deadline -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block mb-2 font-medium text-sm">Medium</label>
+                                    <div class="custom-select relative" data-name="medium">
+                                        <input type="hidden" name="medium" value="">
+                                        <button type="button" class="cs-trigger w-full pl-3 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-left shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between">
+                                            <span class="cs-label text-gray-400 dark:text-gray-500">Select…</span>
+                                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-500 text-xs cs-icon transition-transform duration-200"></i>
+                                        </button>
+                                        <div class="cs-panel hidden absolute left-0 right-0 top-full mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden z-50 border border-gray-100 dark:border-gray-700">
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Digital">Digital</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Watercolours">Watercolours</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Acrylics">Acrylics</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Coloured Pencils">Coloured Pencils</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Ink">Ink</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Ink & Watercolours">Ink & Watercolours</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Other">Other</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block mb-2 font-medium text-sm">Estimated Deadline</label>
+                                    <div class="custom-select relative" data-name="estimated_deadline">
+                                        <input type="hidden" name="estimated_deadline" value="">
+                                        <button type="button" class="cs-trigger w-full pl-3 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-left shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between">
+                                            <span class="cs-label text-gray-400 dark:text-gray-500">Select…</span>
+                                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-500 text-xs cs-icon transition-transform duration-200"></i>
+                                        </button>
+                                        <div class="cs-panel hidden absolute left-0 right-0 top-full mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden z-50 border border-gray-100 dark:border-gray-700">
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="Less than 1 month">Less than 1 month</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="1–2 months">1–2 months</button>
+                                            <button type="button" class="cs-option block w-full text-left py-2 px-3 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-colors text-sm" data-value="No time constraints">No time constraints</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Row 3: Budget (full width) -->
                             <div>
-                                <label for="budget" class="block mb-2 font-medium">Budget</label>
+                                <label for="budget" class="block mb-2 font-medium text-sm">Budget</label>
                                 <div class="relative">
-                                    <input type="number" id="budget" name="budget_aud" min="0" step="1" placeholder="0" class="w-full p-3 pr-14 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <input type="number" id="budget" name="budget_aud" min="0" step="1" placeholder="0" class="w-full pl-3 pr-16 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
                                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400 dark:text-gray-500 pointer-events-none">AUD</span>
                                 </div>
                             </div>
-                            <div>
-                                <label for="deadline" class="block mb-2 font-medium">Estimated Deadline</label>
-                                <input type="date" id="deadline" name="estimated_deadline" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700 dark:text-gray-300">
-                            </div>
                         </div>
+
                         <div>
-                            <label for="message" class="block mb-2 font-medium">Message</label>
+                            <label for="message" class="block mb-2 font-medium">Message <span class="text-primary">*</span></label>
                             <textarea id="message" name="message" rows="5" class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" required></textarea>
                         </div>
                         <input type="hidden" name="_subject" value="New message from Melbourne Art Studio website">
                         <input type="text" name="_gotcha" style="display:none">
-                        <button type="submit" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center"><i class="fas fa-envelope mr-2"></i><span>Send Message</span></button>
+                        <button type="submit" id="submit-btn" disabled class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-primary dark:disabled:hover:text-white"><i class="fas fa-envelope mr-2"></i><span>Send Message</span></button>
                     </form>
                 </div>
             </div>
@@ -680,6 +726,93 @@
     <!-- Custom JavaScript -->
     <script src="js/main.js"></script>
     <script src="js/animations.js"></script>
+    <script>
+        // Form validation: enable submit only when name, valid email, and message are filled
+        (function () {
+            function initFormValidation() {
+                var form = document.getElementById('contact-form');
+                var btn  = document.getElementById('submit-btn');
+                var name = document.getElementById('name');
+                var email = document.getElementById('email');
+                var msg  = document.getElementById('message');
+                var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                var emailError = document.getElementById('email-error');
+                function validate() {
+                    var emailVal = email.value.trim();
+                    var emailValid = emailRe.test(emailVal);
+                    if (emailVal && !emailValid) {
+                        emailError.classList.remove('hidden');
+                    } else {
+                        emailError.classList.add('hidden');
+                    }
+                    btn.disabled = !(name.value.trim() && emailValid && msg.value.trim());
+                }
+                [name, email, msg].forEach(function (el) { el.addEventListener('input', validate); });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initFormValidation);
+            } else {
+                initFormValidation();
+            }
+        })();
+        // Custom styled dropdowns for the commission form
+        (function () {
+            function initCustomSelects() {
+                document.querySelectorAll('.custom-select').forEach(function (cs) {
+                    var trigger = cs.querySelector('.cs-trigger');
+                    var panel   = cs.querySelector('.cs-panel');
+                    var label   = cs.querySelector('.cs-label');
+                    var icon    = cs.querySelector('.cs-icon');
+                    var hidden  = cs.querySelector('input[type="hidden"]');
+
+                    trigger.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        var isOpen = !panel.classList.contains('hidden');
+                        // Close all others
+                        document.querySelectorAll('.cs-panel').forEach(function (p) {
+                            p.classList.add('hidden');
+                        });
+                        document.querySelectorAll('.cs-icon').forEach(function (i) {
+                            i.style.transform = '';
+                        });
+                        // Toggle this one
+                        if (!isOpen) {
+                            panel.classList.remove('hidden');
+                            icon.style.transform = 'rotate(180deg)';
+                        }
+                    });
+
+                    cs.querySelectorAll('.cs-option').forEach(function (opt) {
+                        opt.addEventListener('click', function () {
+                            var val = opt.dataset.value;
+                            hidden.value = val;
+                            label.textContent = val;
+                            label.classList.remove('text-gray-400', 'dark:text-gray-500');
+                            label.classList.add('text-gray-700', 'dark:text-gray-200');
+                            panel.classList.add('hidden');
+                            icon.style.transform = '';
+                        });
+                    });
+                });
+
+                // Close on outside click
+                document.addEventListener('click', function () {
+                    document.querySelectorAll('.cs-panel').forEach(function (p) {
+                        p.classList.add('hidden');
+                    });
+                    document.querySelectorAll('.cs-icon').forEach(function (i) {
+                        i.style.transform = '';
+                    });
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initCustomSelects);
+            } else {
+                initCustomSelects();
+            }
+        })();
+    </script>
     
     <!-- Initialize AOS -->
     <script>
