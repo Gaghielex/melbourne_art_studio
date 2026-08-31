@@ -203,7 +203,7 @@ html {
     flex: 1;
     position: relative;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
     overflow: hidden;
     min-height: 0;
@@ -227,15 +227,36 @@ html {
     box-shadow: 0 12px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* Soft gradient fade at the bottom blending image into the info panel */
+/* Soft gradient fade at the top */
+.lb-image-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(10,10,16,0.4) 0%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Stronger top fade on mobile */
+@media (max-width: 768px) {
+    .lb-image-wrap::before {
+        height: 280px;
+        background: linear-gradient(to bottom, #0a0a10 0%, rgba(10,10,16,0.75) 40%, transparent 100%);
+    }
+}
+
+/* Soft gradient fade at the bottom — covers gap below centered image and blends into info panel */
 .lb-image-wrap::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 120px;
-    background: linear-gradient(to bottom, transparent, #13131c);
+    height: 260px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(19,19,28,0.8) 55%, #13131c 100%);
     z-index: 2;
     pointer-events: none;
 }
