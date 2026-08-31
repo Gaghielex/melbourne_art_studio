@@ -166,12 +166,11 @@ function initGalleryLoadMore() {
         const isMobile = window.innerWidth <= 768;
 
         lightbox.innerHTML = `
-            <div style="position:absolute;top:16px;left:18px;color:#fff;font-size:12px;letter-spacing:0.08em;z-index:10;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);padding:5px 12px;border-radius:999px;">1 / 1</div>
             <button id="hlb-close" aria-label="Close" style="position:absolute;top:12px;right:16px;width:38px;height:38px;border:1px solid rgba(255,255,255,0.3);border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;"><i class="fas fa-times"></i></button>
             <div id="hlb-wrap" style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0;">
-                <div style="position:absolute;top:0;left:0;right:0;height:${isMobile ? '280px' : '120px'};background:linear-gradient(to bottom,${isMobile ? '#0a0a10 0%,rgba(10,10,16,0.75) 40%' : 'rgba(10,10,16,0.4) 0%'},transparent 100%);z-index:2;pointer-events:none;"></div>
-                <div style="position:absolute;bottom:0;left:0;right:0;height:260px;background:linear-gradient(to bottom,transparent 0%,rgba(19,19,28,0.8) 55%,#13131c 100%);z-index:2;pointer-events:none;"></div>
-                <div style="position:absolute;inset:-40px;background-image:url('${src}');background-size:cover;background-position:center;filter:blur(40px) brightness(0.45) saturate(1.6);z-index:0;"></div>
+                <div style="position:absolute;top:0;left:0;right:0;height:${isMobile ? '160px' : '120px'};background:linear-gradient(to bottom,${isMobile ? 'rgba(10,10,16,0.6) 0%,rgba(10,10,16,0.3) 50%' : 'rgba(10,10,16,0.2) 0%'},transparent 100%);z-index:2;pointer-events:none;"></div>
+                <div style="position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(to bottom,transparent 0%,rgba(19,19,28,0.6) 65%,#13131c 100%);z-index:2;pointer-events:none;"></div>
+                <div style="position:absolute;inset:-40px;background-image:url('${src}');background-size:cover;background-position:center;filter:blur(${isMobile ? '30px' : '40px'}) brightness(${isMobile ? '0.9' : '0.6'}) saturate(${isMobile ? '1.5' : '1.4'});z-index:0;"></div>
                 <img src="${src}" alt="${alt}" style="position:relative;max-width:100%;max-height:calc(100vh - 160px);object-fit:contain;z-index:1;border-radius:2px;box-shadow:0 12px 60px rgba(0,0,0,0.6);">
             </div>
             <div style="flex-shrink:0;overflow-y:auto;padding:22px 28px 32px;background:#13131c;border-top:1px solid rgba(255,255,255,0.07);">
@@ -187,6 +186,54 @@ function initGalleryLoadMore() {
         document.body.appendChild(lightbox);
         document.body.style.overflow = 'hidden';
         document.documentElement.style.overflow = 'hidden';
+
+        // Zoom/pan on desktop
+        if (!isMobile) {
+            const zoomImg = lightbox.querySelector('img');
+            const zoomWrap = lightbox.querySelector('#hlb-wrap');
+            let zoomed = false;
+            const SCALE = 2;
+
+            zoomImg.style.cursor = 'zoom-in';
+
+            zoomImg.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!zoomed) {
+                    zoomImg.style.transition = 'transform 0.2s ease';
+                    zoomImg.style.transformOrigin = 'center center';
+                    zoomImg.style.transform = `scale(${SCALE})`;
+                    zoomImg.style.zIndex = '20';
+                    zoomWrap.style.overflow = 'visible';
+                    zoomImg.style.cursor = 'grab';
+                    zoomed = true;
+                } else {
+                    zoomImg.style.transition = 'transform 0.2s ease';
+                    zoomImg.style.transform = 'scale(1) translate(0px, 0px)';
+                    zoomImg.style.zIndex = '1';
+                    zoomWrap.style.overflow = 'hidden';
+                    zoomImg.style.cursor = 'zoom-in';
+                    zoomed = false;
+                }
+            });
+
+            zoomWrap.addEventListener('mousemove', (e) => {
+                if (!zoomed) return;
+                const r = zoomWrap.getBoundingClientRect();
+                const maxX = Math.max(0, (zoomImg.offsetWidth * SCALE - r.width) / 2);
+                const maxY = Math.max(0, (zoomImg.offsetHeight * SCALE - r.height) / 2);
+                const relX = (e.clientX - r.left - r.width / 2) / (r.width / 2);
+                const relY = (e.clientY - r.top - r.height / 2) / (r.height / 2);
+                const panX = Math.max(-maxX, Math.min(maxX, relX * maxX));
+                const panY = Math.max(-maxY, Math.min(maxY, relY * maxY));
+                zoomImg.style.transition = 'none';
+                zoomImg.style.transform = `scale(${SCALE}) translate(${panX / SCALE}px, ${panY / SCALE}px)`;
+                zoomImg.style.cursor = 'grabbing';
+            });
+
+            zoomWrap.addEventListener('mouseleave', () => {
+                if (zoomed) zoomImg.style.cursor = 'grab';
+            });
+        }
 
         setTimeout(() => { lightbox.style.opacity = '1'; }, 10);
 
