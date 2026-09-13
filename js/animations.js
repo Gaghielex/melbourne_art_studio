@@ -81,7 +81,7 @@ function initHoverEffects() {
 // Scroll Animations
 function initScrollAnimations() {
     // Create an animation for section headers when they scroll into view
-    const sectionHeaders = document.querySelectorAll('section h2');
+    const sectionHeaders = document.querySelectorAll('section h2:not([data-aos])');
     
     // Create a reveal animation for headers
     const headerObserver = new IntersectionObserver((entries) => {
