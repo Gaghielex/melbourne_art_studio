@@ -6,7 +6,7 @@
         // Immediately apply theme preference before page renders
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
+
         if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -200,15 +200,6 @@
                     <p class="text-lg mb-6">Hi, I’m Gabriel, a Melbourne-based artist and designer with over a decade of experience creating 
                         unique artworks for art enthusiasts in Melbourne and overseas. From bold digital illustrations to delicate traditional pieces, 
                         my mission is to inspire and help others express themselves through art.</p>
-                    <div class="flex flex-wrap gap-4 flex-col sm:flex-row">
-                        <div class="flex items-center">
-                            <i class="fas fa-palette text-primary text-2xl mr-3"></i>
-                            <div>
-                                <h3 class="font-bold">Art Commissions</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Digital or traditional artworks</p>
-                            </div>
-                        </div>
-                    </div>
                     <div class="py-6">
                         <a href="/about/" class="border border-primary text-primary hover:bg-primary hover:text-white dark:text-white px-8 py-3 rounded-full transition-colors inline-flex items-center">Read More <i class="fas fa-arrow-right ml-2"></i></a>
                     </div>
