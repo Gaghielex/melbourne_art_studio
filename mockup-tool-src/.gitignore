@@ -1,0 +1,7 @@
+node_modules
+dist
+.DS_Store
+*.local
+
+# Raw texture downloads (1GB+, not deployed)
+texture-sources/
