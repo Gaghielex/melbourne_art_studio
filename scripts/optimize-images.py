@@ -9,7 +9,7 @@ Originals are untouched.
 
 import os
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageOps
 
 BASE   = Path(__file__).parent.parent
 ASSETS = BASE / "assets" / "images"
@@ -25,6 +25,9 @@ SKIP_EXT = {'.svg'}
 def resize_and_save(src: Path, dest: Path, max_width: int):
     dest.parent.mkdir(parents=True, exist_ok=True)
     with Image.open(src) as img:
+        # Phone photos store rotation as an EXIF flag; WebP output drops it,
+        # so bake the rotation into the pixels first.
+        img = ImageOps.exif_transpose(img)
         img = img.convert("RGB")  # strip alpha / CMYK / etc
         w, h = img.size
         if w > max_width:
