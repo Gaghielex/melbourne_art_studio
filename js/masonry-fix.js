@@ -14,52 +14,32 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function initMasonryGallery() {
     const galleryContainer = document.getElementById('gallery-container');
-    
+
     // Only proceed if gallery container exists
     if (!galleryContainer) return;
-    
-    const galleryItems = document.querySelectorAll('.masonry-item img');
-    const totalImages = galleryItems.length;
-    let loadedImages = 0;
-    
-    // Hide gallery initially to prevent flickering
+
+    // The grid itself is plain CSS multi-column (see .masonry-grid /
+    // .masonry-gallery) — there's no JS-computed layout to wait for, so
+    // there's nothing to get "wrong" by revealing early. Below-the-fold
+    // gallery images use loading="lazy", meaning the browser deliberately
+    // doesn't fetch them until they're scrolled near — so gating this
+    // reveal on every image's load event (the previous approach) waited on
+    // network requests the browser was intentionally deferring, and the
+    // whole gallery stayed invisible until the user scrolled to the very
+    // last image. Reveal on a short fixed delay instead: long enough to
+    // avoid a flash of unstyled content on navigation, short enough to
+    // never block on images the browser hasn't chosen to fetch yet.
+    // setTimeout rather than requestAnimationFrame: rAF only fires on the
+    // next paint, which some browser contexts defer or skip entirely while
+    // a tab is backgrounded/not actively rendering — which would leave the
+    // gallery invisible forever, exactly the bug this is fixing. A timer
+    // fires regardless of paint/visibility state.
     galleryContainer.style.opacity = '0';
-    
-    // Create a promise to track image loading
-    const imagePromises = Array.from(galleryItems).map(img => {
-        return new Promise((resolve) => {
-            // If image is already loaded or has no src
-            if (img.complete || !img.src) {
-                loadedImages++;
-                resolve();
-                return;
-            }
-            
-            // Add load event listeners
-            img.addEventListener('load', () => {
-                loadedImages++;
-                resolve();
-            });
-            
-            img.addEventListener('error', () => {
-                loadedImages++;
-                resolve(); // Resolve even on error to prevent hanging
-            });
-        });
-    });
-    
-    // When all images are loaded, reveal gallery
-    Promise.all(imagePromises).then(() => {
-        // Add a small delay to ensure browser has time to calculate layout
-        setTimeout(() => {
-            // Apply smooth transition to prevent sudden appearance
-            galleryContainer.style.transition = 'opacity 0.3s ease-in';
-            galleryContainer.style.opacity = '1';
-            
-            // Force browser to recalculate layout if needed
-            if (typeof AOS !== 'undefined') {
-                AOS.refresh();
-            }
-        }, 100);
-    });
+    galleryContainer.style.transition = 'opacity 0.3s ease-in';
+    setTimeout(() => {
+        galleryContainer.style.opacity = '1';
+        if (typeof AOS !== 'undefined') {
+            AOS.refresh();
+        }
+    }, 0);
 }
