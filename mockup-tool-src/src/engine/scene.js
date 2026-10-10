@@ -88,6 +88,9 @@ function buildFrameTexture(frameOuterW, frameOuterH, frameW, seed, lightPreset =
       // one of them wrongly.
       const horizontal = dH <= dV
       const distAcross = horizontal ? dH : dV
+      // Everything inside the moulding is covered by the mat/art/board that is
+      // drawn on top, so only the ring is worth shading (leaves it transparent).
+      if (distAcross > frameW + 2) continue
       const ax = horizontal ? sx : 0
       const ay = horizontal ? 0 : sy
       const t = Math.max(0, Math.min(1, distAcross / frameW))
@@ -211,6 +214,7 @@ function tintFrameTexture(srcCanvas, hex) {
   const sd = src.data
   const dd = dst.data
   for (let i = 0; i < sd.length; i += 4) {
+    if (sd[i + 3] === 0) continue
     const lum = (sd[i] * 0.299 + sd[i + 1] * 0.587 + sd[i + 2] * 0.114) / Math.max(1, baseLum)
     const mult = Math.max(0.45, Math.min(1.12, lum))
     let newL = baseL * mult
@@ -243,6 +247,7 @@ function applyMitreSheen(canvas, reflectMap, frameW, bodyData) {
   for (let y = 0, p = 0; y < h; y++) {
     for (let x = 0; x < w; x++, p++) {
       const i = p * 4
+      if (d[i + 3] === 0) continue
       if (body) {
         const dH = Math.min(x, w - 1 - x)
         const dV = Math.min(y, h - 1 - y)
@@ -559,6 +564,7 @@ function drawFramedPiece(
   skipShadow,
   lighting = DEFAULT_LIGHTING,
   frameTextureIntensity = 1,
+  frameSeed = null,
 ) {
   const aw = artCanvas.width
   const ah = artCanvas.height
@@ -576,7 +582,7 @@ function drawFramedPiece(
     frameW,
     frameColor,
     textureKey,
-    Math.round(x * 7 + y * 13) + 1,
+    frameSeed ?? Math.round(x * 7 + y * 13) + 1,
     lighting,
     frameTextureIntensity,
   )
@@ -837,6 +843,7 @@ function drawFloatMount(
   paperEdge = 'border',
   lighting = DEFAULT_LIGHTING,
   frameTextureIntensity = 1,
+  frameSeed = null,
 ) {
   const aw = artCanvas.width
   const ah = artCanvas.height
@@ -854,7 +861,7 @@ function drawFloatMount(
     frameW,
     frameColor,
     textureKey,
-    Math.round(x * 7 + y * 13) + 1,
+    frameSeed ?? Math.round(x * 7 + y * 13) + 1,
     lighting,
     frameTextureIntensity,
   )
@@ -915,7 +922,7 @@ function drawUnframedPaper(
 
   if (paperEdge === 'bleed') {
     // v2 PRD §3.4 — "Full bleed": no paper margin at all, so there's no
-    // visible paper-colour ring around the image. The artwork covers the
+    // visible paper-color ring around the image. The artwork covers the
     // whole sheet and the tear is carved directly into its own edge
     // afterward, only exposing the paper grain in the tear's inward notches.
     paperW = aw
@@ -947,7 +954,7 @@ function drawUnframedPaper(
 }
 
 // Overlay a surface grain on the artwork pixels only — not the mat,
-// paper margin, or frame. High-pass maps stay mid-grey so ink colour
+// paper margin, or frame. High-pass maps stay mid-gray so ink color
 // survives; dual overlay + soft-light is what makes weave/tooth read
 // on both light and dark prints.
 // v2 PRD §3.13 — texture intensity controls. `intensity` is a 0..2 multiplier
@@ -1058,6 +1065,7 @@ export function drawPresentedPiece(
         skipShadow,
         lighting,
         frameTextureIntensity,
+        seed,
       )
     case 'float-mount':
       return drawFloatMount(
@@ -1077,6 +1085,7 @@ export function drawPresentedPiece(
         paperEdge,
         lighting,
         frameTextureIntensity,
+        seed,
       )
     case 'unframed-paper':
       return drawUnframedPaper(ctx, x, y, artCanvas, matW, wallColor, seed, skipShadow, paperEdge, lighting)
@@ -1098,6 +1107,7 @@ export function drawPresentedPiece(
         skipShadow,
         lighting,
         frameTextureIntensity,
+        seed,
       )
   }
 }
@@ -1109,7 +1119,7 @@ function drawWallGrain(ctx, w, h, wallTextureCanvas, wallTextureIntensity = 1) {
   const clampAlpha = (a) => Math.max(0, Math.min(1, a * wallTextureIntensity))
   if (wallTextureCanvas) {
     // Cover the wall with the photographed texture (high-pass, so it tints
-    // with the chosen wall colour instead of painting a flat slab).
+    // with the chosen wall color instead of painting a flat slab).
     const iw = wallTextureCanvas.width
     const ih = wallTextureCanvas.height
     const scale = Math.max(w / iw, h / ih)
@@ -1119,7 +1129,7 @@ function drawWallGrain(ctx, w, h, wallTextureCanvas, wallTextureIntensity = 1) {
     const dy = (h - dh) / 2
     // Photographed wall maps are often low-contrast (especially plaster /
     // limewash). Boost local contrast before blending so the grain reads
-    // on a light gallery wall without replacing the chosen wall colour.
+    // on a light gallery wall without replacing the chosen wall color.
     ctx.filter = 'contrast(1.85) saturate(0.35)'
     ctx.globalCompositeOperation = 'overlay'
     ctx.globalAlpha = clampAlpha(0.58)
@@ -1212,7 +1222,7 @@ function drawPictureLightCones(ctx, positions, frameW, matW, intensity, canvasW,
   ctx.restore()
 }
 
-// v2 PRD §3.6 — "Flat colour" background: solid colour with an extremely
+// v2 PRD §3.6 — "Flat color" background: solid color with an extremely
 // faint grain so large areas don't visibly banding-step, no wall lighting
 // falloff (a flat studio backdrop, not a photographed surface).
 function drawFlatBackground(ctx, w, h, hex) {
@@ -1314,7 +1324,7 @@ function drawBackground(ctx, w, h, opts) {
 const BASE_TARGET_H = 700
 
 // Output aspect ratio options (v2 PRD §3.2). `ratio` is width/height;
-// null means Free — the canvas hugs the arrangement, v1 behaviour.
+// null means Free — the canvas hugs the arrangement, v1 behavior.
 export const ASPECT_RATIOS = [
   { key: '4:5', label: '4:5', ratio: 4 / 5 },
   { key: '1:1', label: '1:1', ratio: 1 },
@@ -1610,6 +1620,172 @@ export function computeCompositeDims({
   return { positions: finalPositions, frameW, matW, totalW, totalH }
 }
 
+// ── Layer caches ────────────────────────────────────────────────────────
+// A piece's pixels (frame texture, mat, shadows, deckle…) depend on its size
+// and the look settings — not on where it sits on the wall. Rendering each
+// piece into its own padded canvas, keyed by exactly those inputs, means
+// dragging or re-laying-out the wall only costs a few drawImage calls, and the
+// wall background is likewise reused until a setting that affects it changes.
+const rectifiedIds = new WeakMap()
+let rectifiedCounter = 0
+function objectId(o) {
+  if (!o) return 0
+  let id = rectifiedIds.get(o)
+  if (!id) {
+    id = ++rectifiedCounter
+    rectifiedIds.set(o, id)
+  }
+  return id
+}
+
+// Stable per-piece seed so a piece keeps the same grain/deckle wherever it is.
+export function seedFromId(id) {
+  let h = 2166136261
+  const str = String(id)
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return (h >>> 0) % 100000 + 1
+}
+
+function textureSignature() {
+  const t = getTextures()
+  return [
+    t.texturesReady ? 1 : 0,
+    t.paperToothCanvas ? 1 : 0,
+    t.canvasWeaveCanvas ? 1 : 0,
+    t.woodPanelCanvas ? 1 : 0,
+    t.paperGrainCanvas ? 1 : 0,
+    t.edgeMaskCanvases && t.edgeMaskCanvases.top ? 1 : 0,
+  ].join('')
+}
+
+const PIECE_CACHE_MAX = 14
+const pieceLayerCache = new Map()
+
+// Renders (or fetches) one piece, including its wall shadow, into a canvas
+// padded on every side so the shadow isn't clipped. Draw it at
+// (x - layer.pad, y - layer.pad).
+export function getPieceLayer({
+  piece,
+  scaledW,
+  scaledH,
+  frameW,
+  matW,
+  litFrame,
+  litMat,
+  textureKey,
+  litWall,
+  glaze,
+  presentationStyle,
+  paperEdge,
+  lighting,
+  artTexture,
+  artTextureIntensity,
+  frameTextureIntensity,
+}) {
+  const aw = Math.round(scaledW)
+  const ah = Math.round(scaledH)
+  const key = [
+    piece.id,
+    objectId(piece.rectified),
+    aw,
+    ah,
+    Math.round(frameW * 100),
+    Math.round(matW * 100),
+    litFrame,
+    litMat,
+    textureKey,
+    litWall,
+    glaze,
+    presentationStyle,
+    paperEdge,
+    lighting.style,
+    lighting.colorTemp,
+    lighting.intensity,
+    artTexture,
+    artTextureIntensity,
+    frameTextureIntensity,
+    textureSignature(),
+  ].join('|')
+  const hit = pieceLayerCache.get(key)
+  if (hit) {
+    pieceLayerCache.delete(key)
+    pieceLayerCache.set(key, hit)
+    return hit
+  }
+
+  const outerW = aw + frameW * 2 + matW * 2
+  const outerH = ah + frameW * 2 + matW * 2
+  const pad = Math.ceil(((outerW + outerH) / 2) * 0.17) + 28
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.ceil(outerW) + pad * 2
+  canvas.height = Math.ceil(outerH) + pad * 2
+  const artCanvas = document.createElement('canvas')
+  artCanvas.width = aw
+  artCanvas.height = ah
+  artCanvas.getContext('2d').drawImage(piece.rectified, 0, 0, aw, ah)
+  drawPresentedPiece(
+    canvas.getContext('2d'),
+    pad,
+    pad,
+    artCanvas,
+    frameW,
+    matW,
+    litFrame,
+    litMat,
+    textureKey,
+    litWall,
+    glaze,
+    presentationStyle,
+    seedFromId(piece.id),
+    false,
+    paperEdge,
+    lighting,
+    artTexture,
+    artTextureIntensity,
+    frameTextureIntensity,
+  )
+  const layer = { canvas, pad, outerW, outerH }
+  pieceLayerCache.set(key, layer)
+  while (pieceLayerCache.size > PIECE_CACHE_MAX) pieceLayerCache.delete(pieceLayerCache.keys().next().value)
+  return layer
+}
+
+const BACKGROUND_CACHE_MAX = 3
+const backgroundCache = new Map()
+
+function getBackgroundLayer(w, h, opts, blurSourceImage) {
+  const key = [
+    w,
+    h,
+    opts.backgroundMode,
+    opts.wallColor,
+    opts.flatColor,
+    opts.wallTextureCanvas ? objectId(opts.wallTextureCanvas) : 0,
+    objectId(blurSourceImage),
+    opts.blurRadius,
+    opts.dimAmount,
+    opts.lighting.style,
+    opts.lighting.intensity,
+    opts.wallTextureIntensity,
+  ].join('|')
+  const hit = backgroundCache.get(key)
+  if (hit) {
+    backgroundCache.delete(key)
+    backgroundCache.set(key, hit)
+    return hit
+  }
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  drawBackground(canvas.getContext('2d'), w, h, { ...opts, blurSourceImage })
+  backgroundCache.set(key, canvas)
+  while (backgroundCache.size > BACKGROUND_CACHE_MAX) backgroundCache.delete(backgroundCache.keys().next().value)
+  return canvas
+}
+
 export function renderScene({
   pieces,
   frameWidthPct,
@@ -1670,7 +1846,7 @@ export function renderScene({
     backgroundMode === 'blurred'
       ? (pieces.find((p) => p.id === blurSourceId && p.rectified) || pieces.find((p) => p.rectified))?.rectified
       : null
-  drawBackground(ctx, totalW, totalH, {
+  const bgLayer = getBackgroundLayer(totalW, totalH, {
     backgroundMode,
     wallColor: litWall,
     wallTextureCanvas: wallTextureKey ? getCachedWallTexture(wallTextureKey) : null,
@@ -1680,22 +1856,17 @@ export function renderScene({
     dimAmount,
     lighting,
     wallTextureIntensity,
-  })
+  }, blurSourceImage)
+  ctx.drawImage(bgLayer, 0, 0)
   if (backgroundMode === 'wall' && lighting.style === 'picture') {
     drawPictureLightCones(ctx, positions, frameW, matW, intensity, totalW, totalH)
   }
 
   positions.forEach(({ scaled: s, x, y }) => {
-    const artCanvas = document.createElement('canvas')
-    artCanvas.width = Math.round(s.w)
-    artCanvas.height = Math.round(s.h)
-    artCanvas.getContext('2d').drawImage(s.p.rectified, 0, 0, artCanvas.width, artCanvas.height)
-    const seed = Math.round(x * 7 + y * 13) + 1
-    drawPresentedPiece(
-      ctx,
-      x,
-      y,
-      artCanvas,
+    const layer = getPieceLayer({
+      piece: s.p,
+      scaledW: s.w,
+      scaledH: s.h,
       frameW,
       matW,
       litFrame,
@@ -1704,14 +1875,13 @@ export function renderScene({
       litWall,
       glaze,
       presentationStyle,
-      seed,
-      false,
       paperEdge,
       lighting,
       artTexture,
       artTextureIntensity,
       frameTextureIntensity,
-    )
+    })
+    ctx.drawImage(layer.canvas, Math.round(x) - layer.pad, Math.round(y) - layer.pad)
   })
 
   applyCompositeFilters(canvas, filters, targetH / BASE_TARGET_H)
@@ -1782,7 +1952,7 @@ export function renderSceneExcluding({
     backgroundMode === 'blurred'
       ? (pieces.find((p) => p.id === blurSourceId && p.rectified) || pieces.find((p) => p.rectified))?.rectified
       : null
-  drawBackground(ctx, totalW, totalH, {
+  const bgLayer = getBackgroundLayer(totalW, totalH, {
     backgroundMode,
     wallColor: litWall,
     wallTextureCanvas: wallTextureKey ? getCachedWallTexture(wallTextureKey) : null,
@@ -1792,23 +1962,18 @@ export function renderSceneExcluding({
     dimAmount,
     lighting,
     wallTextureIntensity,
-  })
+  }, blurSourceImage)
+  ctx.drawImage(bgLayer, 0, 0)
   if (backgroundMode === 'wall' && lighting.style === 'picture') {
     drawPictureLightCones(ctx, positions, frameW, matW, intensity, totalW, totalH)
   }
 
   positions.forEach(({ scaled: s, x, y }) => {
     if (s.p.id === excludeId) return
-    const artCanvas = document.createElement('canvas')
-    artCanvas.width = Math.round(s.w)
-    artCanvas.height = Math.round(s.h)
-    artCanvas.getContext('2d').drawImage(s.p.rectified, 0, 0, artCanvas.width, artCanvas.height)
-    const seed = Math.round(x * 7 + y * 13) + 1
-    drawPresentedPiece(
-      ctx,
-      x,
-      y,
-      artCanvas,
+    const layer = getPieceLayer({
+      piece: s.p,
+      scaledW: s.w,
+      scaledH: s.h,
       frameW,
       matW,
       litFrame,
@@ -1817,14 +1982,13 @@ export function renderSceneExcluding({
       litWall,
       glaze,
       presentationStyle,
-      seed,
-      false,
       paperEdge,
       lighting,
       artTexture,
       artTextureIntensity,
       frameTextureIntensity,
-    )
+    })
+    ctx.drawImage(layer.canvas, Math.round(x) - layer.pad, Math.round(y) - layer.pad)
   })
 
   return canvas

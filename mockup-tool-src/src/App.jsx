@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ColorPicker } from './ColorPicker.jsx'
+import { Carousel } from './Carousel.jsx'
 import { applyLighting, extractPalette, LIGHT_STYLES, MAT_PRESETS, rgbToHex, WALL_TONES } from './engine/color.js'
 import { applyCompositeFilters, DEFAULT_FILTERS, FILTER_PRESETS, FILTER_SLIDERS, filtersMatch } from './engine/filters.js'
 import { defaultCorners, rectifyPiece, sortCornersClockwise } from './engine/geometry.js'
 import {
+  getPieceLayer,
   ASPECT_RATIOS,
   computeCompositeDims,
   downloadArtworkOnly,
   downloadCanvasPng,
-  drawPresentedPiece,
   EXPORT_MODES,
   LAYOUT_OPTIONS,
   makeLighting,
@@ -27,7 +28,7 @@ const FRAME_PRESETS = [
   { key: 'white', label: 'White', hex: '#F2EFE8' },
 ]
 // Dark pairs with the open-grain black veneer; White uses ash tinted
-// light (PRD Appendix A). Everything else, including custom colours, starts on oak.
+// light (PRD Appendix A). Everything else, including custom colors, starts on oak.
 const defaultGrainForFramePreset = (presetKey) => {
   if (presetKey === 'dark') return 'black'
   if (presetKey === 'white') return 'ash'
@@ -170,6 +171,47 @@ function CornerEditor({ piece, onCornersChange }) {
   )
 }
 
+
+const FORMAT_NAMES = { '4:5': 'Post', '1:1': 'Square', '9:16': 'Story', '3:2': 'Photo', '16:9': 'Wide', free: 'Free' }
+
+// v2 UI — editing categories. Order = rail/tab order. Everything but "pieces"
+// needs a straightened piece to be useful, so those are disabled until then.
+const EXPORT_DESCRIPTIONS = {
+  social: 'Sized for Instagram at the chosen format',
+  hires: 'Long edge up to 4000px',
+  native: "Keeps the artwork's photographed resolution",
+  artwork: 'Just the straightened artwork, no frame or wall',
+}
+
+function FrameIcon() {
+  return (
+    <svg className="wall-icon" viewBox="0 0 20 20" width="1em" height="1em" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2.5" y="2.5" width="15" height="15" rx="1.2" />
+      <rect x="5.5" y="5.5" width="9" height="9" rx="0.6" />
+      <path d="M8 12.5l1.8-2.4 1.5 1.7 1.1-1.2 1.1 1.9" />
+    </svg>
+  )
+}
+
+function WallIcon() {
+  return (
+    <svg className="wall-icon" viewBox="0 0 20 20" width="1em" height="1em" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="3" width="16" height="14" rx="1.5" />
+      <path d="M2 7.7h16M2 12.3h16M10 3v4.7M6 7.7v4.6M14 7.7v4.6M10 12.3V17" />
+    </svg>
+  )
+}
+
+const CATEGORIES = [
+  { key: 'pieces', label: 'Pieces', icon: 'fa-images' },
+  { key: 'artwork', label: 'Artwork', icon: 'fa-palette' },
+  { key: 'frame', label: 'Frame', icon: null, custom: 'frame' },
+  { key: 'backdrop', label: 'Backdrop', icon: null, custom: 'wall' },
+  { key: 'light', label: 'Light', icon: 'fa-lightbulb' },
+  { key: 'look', label: 'Look', icon: 'fa-wand-magic-sparkles' },
+  { key: 'export', label: 'Export', icon: 'fa-download' },
+]
+
 export default function App() {
   const fileInputRef = useRef(null)
   const compositeRef = useRef(null)
@@ -191,7 +233,7 @@ export default function App() {
   const [wallColor, setWallColor] = useState(WALL_TONES[0].hex)
   // v2 PRD §3.6 — background mode. 'wall' (photographed texture tinted by
   // wallColor, or the procedural fallback when wallTextureKey is null),
-  // 'flat' (solid colour backdrop), or 'blurred' (a piece's own artwork,
+  // 'flat' (solid color backdrop), or 'blurred' (a piece's own artwork,
   // scaled to cover and heavily blurred, behind the sharp pieces).
   const [backgroundMode, setBackgroundMode] = useState('wall')
   const [wallTextureKey, setWallTextureKey] = useState(null)
@@ -239,8 +281,18 @@ export default function App() {
   )
 
   const activePiece = pieces[activeIndex] || null
+  // With one piece there is nothing to pick, so it is always the selection —
+  // that keeps the scale control available without having to tap the piece.
+  const activeSelectedId =
+    selectedPieceId && pieces.some((p) => p.id === selectedPieceId)
+      ? selectedPieceId
+      : pieces.length === 1
+        ? pieces[0].id
+        : null
+  const [scaleDraft, setScaleDraft] = useState(null)
+  const scaleSessionRef = useRef(null)
   const allRectified = pieces.length > 0 && pieces.every((p) => p.rectified)
-  const textureLabel = TEXTURE_OPTIONS.find((o) => o.key === textureKey)?.short || 'oak'
+  const textureLabel = TEXTURE_OPTIONS.find((o) => o.key === textureKey)?.label || 'Oak'
   const wallLabel = WALL_TONES.find((w) => w.hex === wallColor)?.label || 'Custom'
   const artworkPalette = useMemo(() => {
     const hexes = []
@@ -434,7 +486,7 @@ export default function App() {
   }
 
   // Light rule-of-thirds + center grid while dragging, with the specific
-  // line(s) a piece actually snapped to drawn in the accent colour. Purely
+  // line(s) a piece actually snapped to drawn in the accent color. Purely
   // a drag-time visual aid — never part of the committed render.
   // Uses the 'difference' blend mode so the grid stays visible regardless
   // of wall tone or how light/dark the artwork under it is — a plain
@@ -469,7 +521,7 @@ export default function App() {
 
     // The snap indicator itself is the app's own accent purple (matching
     // the corner-drag handles), drawn normally rather than difference-
-    // blended so the brand colour reads correctly — with a soft white
+    // blended so the brand color reads correctly — with a soft white
     // halo underneath so it still shows up against a dark wall or a dark
     // patch of artwork.
     ctx.save()
@@ -524,8 +576,8 @@ export default function App() {
       xCandidates.push(p.x, p.x + p.w / 2, p.x + p.w)
       yCandidates.push(p.y, p.y + p.h / 2, p.y + p.h)
     })
-    const xResult = snapDimension(cx, drag.spriteW / 2, xCandidates, drag.thresholdCanvasPx)
-    const yResult = snapDimension(cy, drag.spriteH / 2, yCandidates, drag.thresholdCanvasPx)
+    const xResult = snapDimension(cx, drag.panelW / 2, xCandidates, drag.thresholdCanvasPx)
+    const yResult = snapDimension(cy, drag.panelH / 2, yCandidates, drag.thresholdCanvasPx)
     cx = xResult.center
     cy = yResult.center
     const snapX = xResult.indicator
@@ -539,6 +591,67 @@ export default function App() {
     drawAlignmentGrid(ctx, drag.totalW, drag.totalH, snapX, snapY)
 
     drag.pending = { x: cx / drag.totalW, y: cy / drag.totalH }
+  }
+
+  // Everything a drag or a scale preview needs: the scene without the moving
+  // piece plus that piece's own layer (with its shadow). Both come out of the
+  // scene layer caches, so after the first render this is a few drawImage calls.
+  const prepareInteraction = (id, dims, pos) => {
+    const lighting = makeLighting(lightStyle, colorTemp, intensity)
+    const surfaceI = lightStyle === 'picture' ? 1 : intensity
+    const litWall = applyLighting(wallColor, colorTemp, surfaceI * (1 - lighting.preset.wallDarken))
+    const litFrame = applyLighting(frameColor, colorTemp, surfaceI)
+    const litMat = applyLighting(matColor, colorTemp, surfaceI)
+
+    const othersCanvas = renderSceneExcluding({
+      pieces,
+      frameWidthPct,
+      matWidthPct,
+      layout,
+      wallColor,
+      frameColor,
+      matColor,
+      textureKey,
+      glaze,
+      aspectRatio,
+      manualPositions,
+      zOrder,
+      presentationStyle,
+      paperEdge,
+      backgroundMode,
+      wallTextureKey,
+      flatColor,
+      blurRadius,
+      dimAmount,
+      blurSourceId,
+      lightStyle,
+      colorTemp,
+      intensity,
+      artTexture,
+      artTextureIntensity,
+      frameTextureIntensity,
+      wallTextureIntensity,
+      excludeId: id,
+    })
+    const layer = getPieceLayer({
+      piece: pos.scaled.p,
+      scaledW: pos.scaled.w,
+      scaledH: pos.scaled.h,
+      frameW: dims.frameW,
+      matW: dims.matW,
+      litFrame,
+      litMat,
+      textureKey,
+      litWall,
+      glaze,
+      presentationStyle,
+      paperEdge,
+      lighting,
+      artTexture,
+      artTextureIntensity,
+      frameTextureIntensity,
+    })
+    return { othersCanvas, sprite: layer.canvas, panelW: layer.outerW, panelH: layer.outerH }
   }
 
   const onCompositePointerDown = (e) => {
@@ -567,72 +680,7 @@ export default function App() {
         const id = pos.scaled.p.id
         setSelectedPieceId(id)
 
-        const lighting = makeLighting(lightStyle, colorTemp, intensity)
-        const surfaceI = lightStyle === 'picture' ? 1 : intensity
-        const litWall = applyLighting(wallColor, colorTemp, surfaceI * (1 - lighting.preset.wallDarken))
-        const litFrame = applyLighting(frameColor, colorTemp, surfaceI)
-        const litMat = applyLighting(matColor, colorTemp, surfaceI)
-
-        const othersCanvas = renderSceneExcluding({
-          pieces,
-          frameWidthPct,
-          matWidthPct,
-          layout,
-          wallColor,
-          frameColor,
-          matColor,
-          textureKey,
-          glaze,
-          aspectRatio,
-          manualPositions,
-          zOrder,
-          presentationStyle,
-          paperEdge,
-          backgroundMode,
-          wallTextureKey,
-          flatColor,
-          blurRadius,
-          dimAmount,
-          blurSourceId,
-          lightStyle,
-          colorTemp,
-          intensity,
-          artTexture,
-          artTextureIntensity,
-          frameTextureIntensity,
-          wallTextureIntensity,
-          excludeId: id,
-        })
-
-        const artCanvas = document.createElement('canvas')
-        artCanvas.width = pos.scaled.w
-        artCanvas.height = pos.scaled.h
-        artCanvas.getContext('2d').drawImage(pos.scaled.p.rectified, 0, 0, artCanvas.width, artCanvas.height)
-        const seed = Math.round(pos.x * 7 + pos.y * 13) + 1
-        const sprite = document.createElement('canvas')
-        sprite.width = Math.round(w)
-        sprite.height = Math.round(h)
-        drawPresentedPiece(
-          sprite.getContext('2d'),
-          0,
-          0,
-          artCanvas,
-          dims.frameW,
-          dims.matW,
-          litFrame,
-          litMat,
-          textureKey,
-          litWall,
-          glaze,
-          presentationStyle,
-          seed,
-          true, // skipShadow — this is a fast drag preview, not the final render
-          paperEdge,
-          lighting,
-          artTexture,
-          artTextureIntensity,
-          frameTextureIntensity,
-        )
+        const { othersCanvas, sprite, panelW, panelH } = prepareInteraction(id, dims, pos)
 
         dragRef.current = {
           id,
@@ -653,6 +701,8 @@ export default function App() {
           sprite,
           spriteW: sprite.width,
           spriteH: sprite.height,
+          panelW,
+          panelH,
           filters: { ...filters },
           latestPointer: { px, py },
           rafId: null,
@@ -756,7 +806,80 @@ export default function App() {
     })
   }
 
+  // Dragging the scale slider re-rendering the whole scene on every tick is what
+  // made it feel laggy. Instead: paint the cached backdrop plus the piece's
+  // sprite stretched around its centre (a couple of drawImage calls), and
+  // commit the real render once the slider has settled.
+  const paintScalePreview = () => {
+    const sess = scaleSessionRef.current
+    const canvas = compositeRef.current
+    if (!sess || !canvas) return
+    sess.rafId = null
+    const k = sess.scale / sess.baseScale
+    const dw = sess.sprite.width * k
+    const dh = sess.sprite.height * k
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(sess.othersCanvas, 0, 0)
+    ctx.drawImage(sess.sprite, sess.cx - dw / 2, sess.cy - dh / 2, dw, dh)
+  }
+
+  const commitScale = () => {
+    const sess = scaleSessionRef.current
+    if (!sess) return
+    scaleSessionRef.current = null
+    if (sess.rafId) cancelAnimationFrame(sess.rafId)
+    setScaleDraft(null)
+    setSelectedPieceScale(sess.scale)
+  }
+
+  const handleScaleInput = (scale) => {
+    const id = activeSelectedId
+    if (!id) return
+    setScaleDraft(scale)
+    let sess = scaleSessionRef.current
+    if (!sess || sess.id !== id) {
+      const dims = computeCompositeDims({
+        pieces,
+        frameWidthPct,
+        matWidthPct,
+        layout,
+        aspectRatio,
+        manualPositions,
+        zOrder,
+        presentationStyle,
+        paperEdge,
+      })
+      const pos = dims?.positions.find((p) => p.scaled.p.id === id)
+      if (!pos || !compositeRef.current) {
+        setScaleDraft(null)
+        setSelectedPieceScale(scale)
+        return
+      }
+      const w = pos.scaled.w + dims.frameW * 2 + dims.matW * 2
+      const h = pos.scaled.h + dims.frameW * 2 + dims.matW * 2
+      const { othersCanvas, sprite } = prepareInteraction(id, dims, pos)
+      sess = {
+        id,
+        othersCanvas,
+        sprite,
+        cx: pos.x + w / 2,
+        cy: pos.y + h / 2,
+        baseScale: manualPositions[id]?.scale ?? 1,
+        scale,
+        rafId: null,
+        timer: null,
+      }
+      scaleSessionRef.current = sess
+    }
+    sess.scale = scale
+    if (!sess.rafId) sess.rafId = requestAnimationFrame(paintScalePreview)
+    clearTimeout(sess.timer)
+    sess.timer = setTimeout(commitScale, 180)
+  }
+
   const setSelectedPieceScale = (scale) => {
+    const selectedPieceId = activeSelectedId
     if (!selectedPieceId) return
     setManualPositions((prev) => {
       const current = prev[selectedPieceId]
@@ -985,69 +1108,240 @@ export default function App() {
     }
     return {
       title: 'Museum wall preview',
-      sub: 'Adjust frame colour, width, and mat on the left. This updates live.',
+      sub: 'Use the categories to adjust the mockup. It updates live.',
     }
   }, [pieces.length, allRectified, activeIndex, editingCorners])
 
   const showComposite = allRectified && !editingCorners
 
-  return (
-    <div className="app">
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brand-lockup">
-            <img
-              className="brand-logo"
-              src={`${import.meta.env.BASE_URL}branding/${theme === 'dark' ? 'magpie-dark' : 'magpie-light'}.svg`}
-              alt="Melbourne ArtStudio"
-            />
-            <div>
-              <div className="brand-mark">Melbourne ArtStudio</div>
-              <div className="brand-sub">Artwork mockup tool</div>
-            </div>
-          </div>
-          <button
-            className="theme-toggle"
-            type="button"
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
-          >
-            <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`} aria-hidden="true" />
-          </button>
-        </div>
 
-        <div className="steps">
-          <div className="step">
-            <div className="step-head">
-              <span className="step-num">1</span>
-              <span className="step-title">Upload artwork</span>
-            </div>
-            <div className="step-body">Photos, not scans, are fine. Up to {MAX_PIECES} pieces for a series mockup.</div>
-            {pieces.length < MAX_PIECES && (
-              <div
-                className="dropzone"
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault()
-                  addFiles(e.dataTransfer.files)
-                }}
-              >
-                <div className="dropzone-label">Click to choose files</div>
-                <div className="dropzone-hint">JPG or PNG, up to {MAX_PIECES}. Nothing is uploaded to a server.</div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/jpeg,image/png,image/*"
-                  multiple
-                  onChange={(e) => {
-                    addFiles(e.target.files)
-                    e.target.value = ''
-                  }}
-                />
+  const stage = !pieces.length ? 'home' : showComposite ? 'edit' : 'straighten'
+  const [activeCategory, setActiveCategory] = useState('pieces')
+  const [panelOpen, setPanelOpen] = useState(true)
+  const category = stage === 'edit' ? activeCategory : 'pieces'
+  const currentCategory = CATEGORIES.find((c) => c.key === category)
+  const selectCategory = (key) => {
+    if (key !== 'pieces' && !allRectified) return
+    if (key === category) {
+      setPanelOpen((open) => !open)
+      return
+    }
+    setActiveCategory(key)
+    setPanelOpen(true)
+    if (key !== 'pieces' && editingCorners) setEditingCorners(false)
+  }
+  const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  const exportMenuRef = useRef(null)
+  useEffect(() => {
+    if (!exportMenuOpen) return undefined
+    const close = (e) => {
+      if (e.type === 'keydown' ? e.key === 'Escape' : !exportMenuRef.current?.contains(e.target)) setExportMenuOpen(false)
+    }
+    document.addEventListener('pointerdown', close)
+    document.addEventListener('keydown', close)
+    return () => {
+      document.removeEventListener('pointerdown', close)
+      document.removeEventListener('keydown', close)
+    }
+  }, [exportMenuOpen])
+  const chooseFormat = (key) => {
+    setAspectRatioKey(key)
+    // Manual positions are canvas-relative fractions, and changing the
+    // aspect ratio resizes the canvas.
+    resetArrangement()
+  }
+  const brandLockup = (
+    <div className="brand-lockup">
+      <img
+        className="brand-logo"
+        src={`${import.meta.env.BASE_URL}branding/${theme === 'dark' ? 'magpie-dark' : 'magpie-light'}.svg`}
+        alt="Melbourne ArtStudio"
+      />
+      <div>
+        <div className="brand-mark">Melbourne ArtStudio</div>
+        <div className="brand-sub">Artwork mockup tool</div>
+      </div>
+    </div>
+  )
+  const themeToggle = (
+    <button
+      className="theme-toggle"
+      type="button"
+      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
+    >
+      <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`} aria-hidden="true" />
+    </button>
+  )
+  const uploadClick = () => fileInputRef.current?.click()
+
+  return (
+    <div className={'app app-' + stage}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/*"
+        multiple
+        onChange={(e) => {
+          addFiles(e.target.files)
+          e.target.value = ''
+        }}
+      />
+
+      {stage === 'home' ? (
+        <div className="start">
+          <header className="topbar">
+            {brandLockup}
+            {themeToggle}
+          </header>
+          <section
+            className="hero"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault()
+              addFiles(e.dataTransfer.files)
+            }}
+          >
+            <div className="hero-banner">
+              <h1>What will you design?</h1>
+              <p className="hero-sub">Pick a format, then upload up to {MAX_PIECES} photos of your pieces — drop them anywhere here.</p>
+              <div className="format-row" role="radiogroup" aria-label="Output format">
+                {ASPECT_RATIOS.map((a) => (
+                  <button
+                    key={a.key}
+                    type="button"
+                    role="radio"
+                    aria-checked={aspectRatioKey === a.key}
+                    className={'format-chip' + (aspectRatioKey === a.key ? ' selected' : '')}
+                    onClick={() => chooseFormat(a.key)}
+                  >
+                    <span className="format-icon">
+                      {a.ratio ? (
+                        <span
+                          className="ratio-box"
+                          style={{ aspectRatio: String(a.ratio), ...(a.ratio >= 1 ? { width: '58%' } : { height: '58%' }) }}
+                        />
+                      ) : (
+                        <i className="fa-solid fa-expand" aria-hidden="true" />
+                      )}
+                    </span>
+                    <span className="format-label">{FORMAT_NAMES[a.key]}</span>
+                    <span className="format-sub">{a.label}</span>
+                  </button>
+                ))}
               </div>
-            )}
+              <button className="btn hero-cta" type="button" onClick={uploadClick}>
+                <i className="fa-solid fa-arrow-up-from-bracket" aria-hidden="true" /> Upload artwork
+              </button>
+            </div>
+          </section>
+          <Carousel />
+        </div>
+      ) : (
+        <div className="editor" data-stage={stage}>
+          <header className="editor-top">
+            {brandLockup}
+            <div className="editor-top-actions">
+              <button
+                className="chip chip-format"
+                type="button"
+                title="Output format"
+                disabled={!allRectified}
+                onClick={() => selectCategory('export')}
+              >
+                <i className="fa-solid fa-crop-simple" aria-hidden="true" />{' '}
+                {FORMAT_NAMES[aspectRatioKey]} {ASPECT_RATIOS.find((a) => a.key === aspectRatioKey)?.ratio ? `· ${aspectRatioKey}` : ''}
+              </button>
+              {themeToggle}
+              <div className="export-menu-wrap" ref={exportMenuRef}>
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  disabled={!allRectified}
+                  aria-haspopup="true"
+                  aria-expanded={exportMenuOpen}
+                  onClick={() => setExportMenuOpen((open) => !open)}
+                >
+                  <i className="fa-solid fa-download" aria-hidden="true" /> Export{' '}
+                  <i className={`fa-solid ${exportMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'} export-caret`} aria-hidden="true" />
+                </button>
+                {exportMenuOpen && (
+                  <div className="export-menu" role="menu">
+                    <div className="export-menu-title">Export as PNG</div>
+                    {EXPORT_MODES.map((m) => (
+                      <button
+                        key={m.key}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={exportMode === m.key}
+                        className={'export-opt' + (exportMode === m.key ? ' selected' : '')}
+                        onClick={() => {
+                          setExportMode(m.key)
+                          setCapNotice('')
+                        }}
+                      >
+                        <span className="export-opt-label">{m.label}</span>
+                        <span className="export-opt-desc">{EXPORT_DESCRIPTIONS[m.key]}</span>
+                      </button>
+                    ))}
+                    <button
+                      className="btn btn-primary btn-full"
+                      type="button"
+                      onClick={(e) => {
+                        downloadPng(e)
+                        setExportMenuOpen(false)
+                      }}
+                    >
+                      <i className="fa-solid fa-download" aria-hidden="true" /> Download PNG
+                    </button>
+                    <button className="export-more" type="button" onClick={() => { setExportMenuOpen(false); selectCategory('export') }}>
+                      More export settings
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </header>
+
+          <nav className="rail" aria-label="Editing categories">
+            {CATEGORIES.map((c) => (
+              <button
+                key={c.key}
+                type="button"
+                className={'rail-btn' + (category === c.key ? ' active' : '')}
+                disabled={c.key !== 'pieces' && !allRectified}
+                aria-pressed={category === c.key}
+                onClick={() => selectCategory(c.key)}
+              >
+                {c.icon ? <i className={`fa-solid ${c.icon}`} aria-hidden="true" /> : c.custom === 'frame' ? <FrameIcon /> : <WallIcon />}
+                <span>{c.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <section className={'panel' + (panelOpen ? '' : ' collapsed')} aria-label={`${currentCategory.label} controls`}>
+            <div className="panel-head">
+              <span className="panel-title">{currentCategory.label}</span>
+              <button
+                className="panel-toggle"
+                type="button"
+                aria-label={panelOpen ? 'Collapse controls' : 'Expand controls'}
+                onClick={() => setPanelOpen((open) => !open)}
+              >
+                <i className={`fa-solid ${panelOpen ? 'fa-chevron-down' : 'fa-chevron-up'}`} aria-hidden="true" />
+              </button>
+            </div>
+            <div className="panel-body">
+              {category === 'pieces' && (
+                <>
+                  <div className="field">
+                    <label>
+                      Pieces{' '}
+                      <span className="value">
+                        {pieces.length} of {MAX_PIECES}
+                      </span>
+                    </label>
             <div className="thumbrow">
               {pieces.map((p, i) => (
                 <div
@@ -1070,14 +1364,19 @@ export default function App() {
                   </button>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className={'step' + (pieces.length ? '' : ' disabled')}>
-            <div className="step-head">
-              <span className="step-num">2</span>
-              <span className="step-title">Straighten each piece</span>
-            </div>
+              {pieces.length < MAX_PIECES && (
+                  <button
+                    type="button"
+                    className="thumb thumb-add"
+                    aria-label="Add artwork"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <i className="fa-solid fa-plus" aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+                  </div>
+                  <div className="field">
             <div className="step-body">
               Drag the four points onto the actual edges of the artwork. Auto-guess starts near the image edges.
             </div>
@@ -1094,17 +1393,78 @@ export default function App() {
                 Straighten this piece
               </button>
             </div>
-          </div>
+                  </div>
+            {pieces.length > 1 && (
+              <div className="field">
+                <label>Series arrangement</label>
+                <div className="ratio-options">
+                  {LAYOUT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      className={'ratio-opt' + (layout === opt.key ? ' selected' : '')}
+                      onClick={() => {
+                        setLayout(opt.key)
+                        resetArrangement()
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="btn-row">
+                  <button className="btn" type="button" onClick={resetArrangement}>
+                    Reset arrangement
+                  </button>
+                </div>
+                <div className="corner-hint" style={{ marginTop: 8 }}>
+                  Drag any framed piece directly in the preview to nudge it off the preset. Tap a piece to select it
+                  for scale and stacking order.
+                </div>
+              </div>
+            )}
+            {activeSelectedId && (
+              <div className="field">
+                <label>
+                  {pieces.length > 1 ? 'Selected piece scale' : 'Piece scale'}{' '}
+                  <span className="value">
+                    {Math.round((scaleDraft ?? manualPositions[activeSelectedId]?.scale ?? 1) * 100)}%
+                  </span>
+                </label>
+                <input
+                  type="range"
+                  min="50"
+                  max="200"
+                  value={Math.round((scaleDraft ?? manualPositions[activeSelectedId]?.scale ?? 1) * 100)}
+                  onChange={(e) => handleScaleInput(+e.target.value / 100)}
+                />
+                <div className="btn-row">
+                  {pieces.length > 1 && (
+                    <>
+                      <button className="btn" type="button" onClick={sendBackward}>
+                        Send back
+                      </button>
+                      <button className="btn" type="button" onClick={bringForward}>
+                        Bring forward
+                      </button>
+                    </>
+                  )}
+                  {pieces.length === 1 && manualPositions[activeSelectedId] && (
+                    <button className="btn" type="button" onClick={resetArrangement}>
+                      Reset position &amp; scale
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+                </>
+              )}
 
-          <div className={'step' + (allRectified ? '' : ' disabled')}>
-            <div className="step-head">
-              <span className="step-num">3</span>
-              <span className="step-title">Frame &amp; wall</span>
-            </div>
-
+              {category === 'artwork' && (
+                <>
             <div className="field">
               <label>
-                Presentation{' '}
+                Display{' '}
                 <span className="value">
                   {PRESENTATION_STYLES.find((s) => s.key === presentationStyle)?.label}
                 </span>
@@ -1122,7 +1482,6 @@ export default function App() {
                 ))}
               </div>
             </div>
-
             {(presentationStyle === 'unframed-paper' || presentationStyle === 'float-mount') && (
               <div className="field">
                 <label>
@@ -1147,10 +1506,9 @@ export default function App() {
                 </div>
               </div>
             )}
-
             <div className="field">
               <label>
-                Artwork texture{' '}
+                Texture{' '}
                 <span className="value">
                   {ART_TEXTURE_OPTIONS.find((o) => o.key === artTexture)?.label || 'None'}
                 </span>
@@ -1171,7 +1529,7 @@ export default function App() {
             {artTexture !== 'none' && (
               <div className="field">
                 <label>
-                  Artwork texture intensity <span className="value">{Math.round(artTextureIntensity * 100)}%</span>
+                  Texture intensity <span className="value">{Math.round(artTextureIntensity * 100)}%</span>
                 </label>
                 <input
                   type="range"
@@ -1182,9 +1540,79 @@ export default function App() {
                 />
               </div>
             )}
-
             <div className="field">
-              <label>Frame colour</label>
+              <label>
+                Mat width <span className="value">{matWidthPct}%</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="200"
+                value={matWidthPct}
+                onChange={(e) => setMatWidthPct(+e.target.value)}
+              />
+            </div>
+            <div className="field">
+              <label>Mat color</label>
+              <div className="swatches">
+                {MAT_PRESETS.map((preset) => (
+                  <button
+                    key={preset.key}
+                    type="button"
+                    className={'swatch' + (selectedMatPreset === preset.key ? ' selected' : '')}
+                    style={{ background: preset.hex }}
+                    title={`${preset.label} — ${preset.hex}`}
+                    aria-label={preset.label}
+                    onClick={() => {
+                      setMatColor(preset.hex)
+                      setCustomMatColor(preset.hex)
+                      setSelectedMatPreset(preset.key)
+                    }}
+                  />
+                ))}
+                <ColorPicker
+                  value={customMatColor}
+                  selected={selectedMatPreset === null}
+                  ariaLabel="Custom mat color"
+                  title={`Custom color — ${customMatColor.toUpperCase()}`}
+                  palette={artworkPalette}
+                  onChange={(hex) => {
+                    setCustomMatColor(hex)
+                    setMatColor(hex)
+                    setSelectedMatPreset(null)
+                  }}
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label>
+                Glazing <span className="value">{glaze === 'glass' ? 'Glass sheen' : 'Matte'}</span>
+              </label>
+              <div className="layout-options">
+                <button
+                  type="button"
+                  className={'layout-opt' + (glaze === 'matte' ? ' selected' : '')}
+                  onClick={() => setGlaze('matte')}
+                >
+                  Matte
+                </button>
+                <button
+                  type="button"
+                  className={'layout-opt' + (glaze === 'glass' ? ' selected' : '')}
+                  onClick={() => setGlaze('glass')}
+                >
+                  Glass sheen
+                </button>
+              </div>
+            </div>
+
+                </>
+              )}
+
+              {category === 'frame' && (
+                <>
+            <div className="field">
+              <label>Frame color</label>
               <div className="swatches">
                 {FRAME_PRESETS.map((preset) => (
                   <button
@@ -1204,8 +1632,8 @@ export default function App() {
                 <ColorPicker
                   value={customColor}
                   selected={selectedFramePreset === null}
-                  ariaLabel="Custom frame colour"
-                  title={`Custom colour — ${customColor.toUpperCase()}`}
+                  ariaLabel="Custom frame color"
+                  title={`Custom color — ${customColor.toUpperCase()}`}
                   palette={artworkPalette}
                   onChange={(hex) => {
                     setCustomColor(hex)
@@ -1215,8 +1643,7 @@ export default function App() {
                 />
               </div>
             </div>
-
-            <div className="field" style={{ marginTop: 26 }}>
+            <div className="field">
               <label>
                 Surface grain <span className="value">{textureLabel}</span>
               </label>
@@ -1228,8 +1655,6 @@ export default function App() {
                     className={'swatch' + (textureKey === o.key ? ' selected' : '')}
                     title={o.label}
                     style={{
-                      width: 34,
-                      height: 34,
                       background: `url(${o.src}) center/cover`,
                     }}
                     onClick={() => setTextureKey(o.key)}
@@ -1262,78 +1687,16 @@ export default function App() {
                 onChange={(e) => setFrameWidthPct(+e.target.value)}
               />
             </div>
-            <div className="field">
-              <label>
-                Mat width <span className="value">{matWidthPct}%</span>
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="200"
-                value={matWidthPct}
-                onChange={(e) => setMatWidthPct(+e.target.value)}
-              />
-            </div>
+                </>
+              )}
 
-            <div className="field">
-              <label>Mat colour</label>
-              <div className="swatches">
-                {MAT_PRESETS.map((preset) => (
-                  <button
-                    key={preset.key}
-                    type="button"
-                    className={'swatch' + (selectedMatPreset === preset.key ? ' selected' : '')}
-                    style={{ background: preset.hex }}
-                    title={`${preset.label} — ${preset.hex}`}
-                    aria-label={preset.label}
-                    onClick={() => {
-                      setMatColor(preset.hex)
-                      setCustomMatColor(preset.hex)
-                      setSelectedMatPreset(preset.key)
-                    }}
-                  />
-                ))}
-                <ColorPicker
-                  value={customMatColor}
-                  selected={selectedMatPreset === null}
-                  ariaLabel="Custom mat colour"
-                  title={`Custom colour — ${customMatColor.toUpperCase()}`}
-                  palette={artworkPalette}
-                  onChange={(hex) => {
-                    setCustomMatColor(hex)
-                    setMatColor(hex)
-                    setSelectedMatPreset(null)
-                  }}
-                />
-              </div>
-            </div>
-            <div className="field">
-              <label>
-                Glazing <span className="value">{glaze === 'glass' ? 'glass' : 'matte'}</span>
-              </label>
-              <div className="layout-options">
-                <button
-                  type="button"
-                  className={'layout-opt' + (glaze === 'matte' ? ' selected' : '')}
-                  onClick={() => setGlaze('matte')}
-                >
-                  Matte
-                </button>
-                <button
-                  type="button"
-                  className={'layout-opt' + (glaze === 'glass' ? ' selected' : '')}
-                  onClick={() => setGlaze('glass')}
-                >
-                  Glass sheen
-                </button>
-              </div>
-            </div>
-
+              {category === 'backdrop' && (
+                <>
             <div className="field">
               <label>
                 Background{' '}
                 <span className="value">
-                  {backgroundMode === 'wall' ? 'Wall' : backgroundMode === 'flat' ? 'Flat colour' : 'Blurred artwork'}
+                  {backgroundMode === 'wall' ? 'Wall' : backgroundMode === 'flat' ? 'Flat color' : 'Blurred artwork'}
                 </span>
               </label>
               <div className="layout-options">
@@ -1349,7 +1712,7 @@ export default function App() {
                   className={'layout-opt' + (backgroundMode === 'flat' ? ' selected' : '')}
                   onClick={() => setBackgroundMode('flat')}
                 >
-                  Flat colour
+                  Flat color
                 </button>
                 <button
                   type="button"
@@ -1360,9 +1723,8 @@ export default function App() {
                 </button>
               </div>
             </div>
-
-            {backgroundMode === 'wall' && (
-              <>
+                  {backgroundMode === 'wall' && (
+                    <>
                 <div className="field">
                   <label>
                     Wall tone <span className="value">{wallLabel}</span>
@@ -1373,7 +1735,7 @@ export default function App() {
                         key={w.hex}
                         type="button"
                         className={'swatch' + (wallColor === w.hex ? ' selected' : '')}
-                        style={{ background: w.hex, width: 28, height: 28 }}
+                        style={{ background: w.hex }}
                         title={w.label}
                         onClick={() => setWallColor(w.hex)}
                       />
@@ -1381,8 +1743,8 @@ export default function App() {
                     <ColorPicker
                       value={wallColor}
                       selected={!WALL_TONES.some((w) => w.hex === wallColor)}
-                      ariaLabel="Custom wall colour"
-                      title={`Custom colour — ${wallColor.toUpperCase()}`}
+                      ariaLabel="Custom wall color"
+                      title={`Custom color — ${wallColor.toUpperCase()}`}
                       palette={artworkPalette}
                       onChange={setWallColor}
                     />
@@ -1427,19 +1789,18 @@ export default function App() {
                     onChange={(e) => setWallTextureIntensity(+e.target.value / 100)}
                   />
                 </div>
-              </>
-            )}
-
+                    </>
+                  )}
             {backgroundMode === 'flat' && (
               <div className="field">
-                <label>Flat colour</label>
+                <label>Flat color</label>
                 <div className="swatches">
                   {WALL_TONES.map((w) => (
                     <button
                       key={w.hex}
                       type="button"
                       className={'swatch' + (flatColor === w.hex ? ' selected' : '')}
-                      style={{ background: w.hex, width: 28, height: 28 }}
+                      style={{ background: w.hex }}
                       title={w.label}
                       onClick={() => setFlatColor(w.hex)}
                     />
@@ -1447,17 +1808,16 @@ export default function App() {
                   <ColorPicker
                     value={flatColor}
                     selected={!WALL_TONES.some((w) => w.hex === flatColor)}
-                    ariaLabel="Custom flat background colour"
-                    title={`Custom colour — ${flatColor.toUpperCase()}`}
+                    ariaLabel="Custom flat background color"
+                    title={`Custom color — ${flatColor.toUpperCase()}`}
                     palette={artworkPalette}
                     onChange={setFlatColor}
                   />
                 </div>
               </div>
             )}
-
-            {backgroundMode === 'blurred' && (
-              <>
+                  {backgroundMode === 'blurred' && (
+                    <>
                 {pieces.length > 1 && (
                   <div className="field">
                     <label>Background source piece</label>
@@ -1499,9 +1859,13 @@ export default function App() {
                     onChange={(e) => setDimAmount(Number(e.target.value) / 100)}
                   />
                 </div>
-              </>
-            )}
+                    </>
+                  )}
+                </>
+              )}
 
+              {category === 'light' && (
+                <>
             <div className="field">
               <label>
                 Light style{' '}
@@ -1522,7 +1886,7 @@ export default function App() {
             </div>
             <div className="field">
               <label>
-                Colour temperature{' '}
+                Color temperature{' '}
                 <span className="value">
                   {colorTemp === 0 ? 'Neutral' : colorTemp > 0 ? `Warm ${Math.round(colorTemp * 100)}` : `Cool ${Math.round(-colorTemp * 100)}`}
                 </span>
@@ -1548,7 +1912,11 @@ export default function App() {
                 onChange={(e) => setIntensity(Number(e.target.value) / 100)}
               />
             </div>
+                </>
+              )}
 
+              {category === 'look' && (
+                <>
             <div className="field">
               <label>
                 Look{' '}
@@ -1584,7 +1952,11 @@ export default function App() {
                 />
               </div>
             ))}
+                </>
+              )}
 
+              {category === 'export' && (
+                <>
             <div className="field">
               <label>
                 Output shape{' '}
@@ -1608,67 +1980,6 @@ export default function App() {
                   </button>
                 ))}
               </div>
-            </div>
-
-            {pieces.length > 1 && (
-              <div className="field">
-                <label>Series arrangement</label>
-                <div className="ratio-options">
-                  {LAYOUT_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.key}
-                      type="button"
-                      className={'ratio-opt' + (layout === opt.key ? ' selected' : '')}
-                      onClick={() => {
-                        setLayout(opt.key)
-                        resetArrangement()
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="btn-row">
-                  <button className="btn" type="button" onClick={resetArrangement}>
-                    Reset arrangement
-                  </button>
-                </div>
-                <div className="corner-hint" style={{ marginTop: 8 }}>
-                  Drag any framed piece directly in the preview to nudge it off the preset. Tap a piece to select it
-                  for scale and stacking order.
-                </div>
-              </div>
-            )}
-
-            {selectedPieceId && pieces.some((p) => p.id === selectedPieceId) && (
-              <div className="field">
-                <label>
-                  Selected piece scale{' '}
-                  <span className="value">{Math.round((manualPositions[selectedPieceId]?.scale ?? 1) * 100)}%</span>
-                </label>
-                <input
-                  type="range"
-                  min="50"
-                  max="200"
-                  value={Math.round((manualPositions[selectedPieceId]?.scale ?? 1) * 100)}
-                  onChange={(e) => setSelectedPieceScale(+e.target.value / 100)}
-                />
-                <div className="btn-row">
-                  <button className="btn" type="button" onClick={sendBackward}>
-                    Send back
-                  </button>
-                  <button className="btn" type="button" onClick={bringForward}>
-                    Bring forward
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className={'step' + (allRectified ? '' : ' disabled')}>
-            <div className="step-head">
-              <span className="step-num">4</span>
-              <span className="step-title">Export</span>
             </div>
             <div className="step-body">
               {exportMode === 'social' && 'Long edge sized for Instagram at the chosen output shape.'}
@@ -1698,38 +2009,22 @@ export default function App() {
               Download PNG
             </button>
             {capNotice && <div className="cap-notice">{capNotice}</div>}
-          </div>
-        </div>
-
-        <div className="footer-note">
-          Everything renders locally in your browser — nothing is uploaded anywhere. Perspective correction and
-          frame rendering is approximate; nudge the points and controls until it reads right to your eye.
-        </div>
-      </aside>
-
-      <main className="viewer">
-        <div className="viewer-top">
-          <div>
-            <div className="viewer-title">{header.title}</div>
-            <div className="viewer-sub">{header.sub}</div>
-          </div>
-          {rendering && (
-            <div className="loading-badge">
-              <span className="dot" /> Rendering…
+                  <div className="footer-note">
+                    Everything renders locally in your browser — nothing is uploaded anywhere. Perspective correction
+                    and frame rendering is approximate; nudge the points and controls until it reads right to your eye.
+                  </div>
+                </>
+              )}
             </div>
-          )}
-        </div>
-        <div className="viewer-stage">
-          {!pieces.length && (
-            <div className="empty-state">
-              <div className="glyph">迷</div>
-              <h3>Nothing loaded yet</h3>
-              <p>
-                Upload a photo on the left. Even an angled, imperfect phone photo works — you&apos;ll straighten it in
-                the next step.
-              </p>
-            </div>
-          )}
+          </section>
+
+          <main className="viewer">
+            {rendering && (
+              <div className="loading-badge loading-float">
+                <span className="dot" /> Rendering…
+              </div>
+            )}
+            <div className="viewer-stage">
           {pieces.length > 0 && !showComposite && activePiece && (
             <CornerEditor
               piece={activePiece}
@@ -1738,7 +2033,7 @@ export default function App() {
               }
             />
           )}
-          {showComposite && pieces.length > 1 && (
+          {showComposite && (
             <canvas
               ref={compositeRef}
               className="composite-canvas draggable"
@@ -1748,9 +2043,10 @@ export default function App() {
               onPointerCancel={onCompositePointerUp}
             />
           )}
-          {showComposite && pieces.length <= 1 && <canvas ref={compositeRef} className="composite-canvas" />}
+            </div>
+          </main>
         </div>
-      </main>
+      )}
     </div>
   )
 }

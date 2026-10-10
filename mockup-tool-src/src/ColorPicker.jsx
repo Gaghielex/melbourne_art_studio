@@ -149,7 +149,7 @@ function ColorPickerPopover({ value, onChange, onClose, palette, getAnchorRect, 
       ref={popRef}
       className="color-picker-pop"
       role="dialog"
-      aria-label="Colour picker"
+      aria-label="Color picker"
       style={{ top: pos.top, left: pos.left }}
     >
       <div
@@ -182,7 +182,7 @@ function ColorPickerPopover({ value, onChange, onClose, palette, getAnchorRect, 
             spellCheck={false}
             autoCapitalize="off"
             autoCorrect="off"
-            aria-label="Hex colour"
+            aria-label="Hex color"
             onChange={(e) => setHexDraft(e.target.value)}
             onBlur={() => applyHex(hexDraft, true)}
             onKeyDown={(e) => {
@@ -213,7 +213,7 @@ function placePopover(anchorRect) {
   return { top, left }
 }
 
-export function ColorPicker({ value, onChange, selected, ariaLabel, title, palette = [] }) {
+export function ColorPicker({ value, onChange, selected, ariaLabel, title, palette = [], size }) {
   const btnRef = useRef(null)
   const [open, setOpen] = useState(false)
 
@@ -223,9 +223,9 @@ export function ColorPicker({ value, onChange, selected, ariaLabel, title, palet
         ref={btnRef}
         type="button"
         className={'swatch-custom' + (selected ? ' selected' : '')}
-        style={{ background: value }}
-        title={title || `Custom colour — ${String(value).toUpperCase()}`}
-        aria-label={ariaLabel || 'Custom colour'}
+        style={size ? { background: value, width: size, height: size, fontSize: Math.round(size * 0.42) } : { background: value }}
+        title={title || `Custom color — ${String(value).toUpperCase()}`}
+        aria-label={ariaLabel || 'Custom color'}
         aria-expanded={open}
         aria-haspopup="dialog"
         onClick={() => setOpen((v) => !v)}

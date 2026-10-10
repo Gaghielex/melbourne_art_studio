@@ -146,7 +146,7 @@ function extractPaperInterior(img) {
   return out
 }
 
-// Keep the photographed tooth and colour, but flatten the sheet's lighting
+// Keep the photographed tooth and color, but flatten the sheet's lighting
 // so it reads as even ivory card — the high-pass/multiply path turned the
 // same photo into dark pits.
 function normalizePaperGrain(srcCanvas) {
@@ -181,7 +181,7 @@ function normalizePaperGrain(srcCanvas) {
   return srcCanvas
 }
 
-// Fine signed tooth around mid-grey — strong enough to read on the
+// Fine signed tooth around mid-gray — strong enough to read on the
 // artwork, without the dark-pit multiply that made the sheet look dirty.
 function makePaperTooth(srcCanvas) {
   const w = srcCanvas.width
@@ -209,8 +209,8 @@ function imageToCanvas(img) {
   return c
 }
 
-// Mid-grey high-pass so a photographed surface can overlay ink without
-// painting its own colour as a slab over the print.
+// Mid-gray high-pass so a photographed surface can overlay ink without
+// painting its own color as a slab over the print.
 function makeHighPassMap(srcCanvas, blurRadius, amp, clip) {
   const w = srcCanvas.width
   const h = srcCanvas.height

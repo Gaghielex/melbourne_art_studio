@@ -223,11 +223,11 @@ export function shade({ r, g, b }, amt) {
   return `rgb(${f(r)},${f(g)},${f(b)})`
 }
 
-// v2 PRD §3.5 — mat colour presets.
+// v2 PRD §3.5 — mat color presets.
 export const MAT_PRESETS = [
   { key: 'white', hex: '#faf8f4', label: 'White' },
   { key: 'cream', hex: '#f0e6d2', label: 'Cream' },
-  { key: 'warm-grey', hex: '#b9b2a4', label: 'Warm grey' },
+  { key: 'warm-gray', hex: '#b9b2a4', label: 'Warm gray' },
   { key: 'black', hex: '#1c1b1a', label: 'Black' },
 ]
 
@@ -238,8 +238,8 @@ export const WALL_TONES = [
   { hex: '#efe7dd', label: 'Cream' },
 ]
 
-// v2 PRD §3.7 — scene lighting. Applied to wall/frame/mat colours before
-// they reach the existing draw functions, so colour temperature and
+// v2 PRD §3.7 — scene lighting. Applied to wall/frame/mat colors before
+// they reach the existing draw functions, so color temperature and
 // intensity don't need threading through every shader — only the light
 // STYLE's direction (bevel highlight, drop shadow, glass sheen) needs that.
 // colorTemp: -1 (cool/blue) .. 1 (warm/orange). intensity: 0 (dim) .. 2 (bright), 1 = neutral.

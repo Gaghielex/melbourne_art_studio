@@ -49,7 +49,7 @@ export function gaussianBlurAlpha(alphaArr, w, h, radius) {
 
 // v2 PRD §3.6 — "Blurred artwork" background. boxBlurChannel is channel-
 // agnostic, so the same three-pass box blur used for alpha silhouettes works
-// directly on colour: blurs R/G/B in place on an ImageData's data array.
+// directly on color: blurs R/G/B in place on an ImageData's data array.
 export function gaussianBlurRGB(data, w, h, radius) {
   const n = w * h
   const r = new Float32Array(n)
