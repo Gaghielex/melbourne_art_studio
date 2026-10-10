@@ -343,7 +343,7 @@ export function loadArtSurfaceTexture(key) {
 export const WALL_TEXTURE_OPTIONS = [
   { key: 'plaster', label: 'Plaster', src: `${import.meta.env.BASE_URL}textures/walls/plaster.jpg` },
   { key: 'concrete', label: 'Concrete', src: `${import.meta.env.BASE_URL}textures/walls/concrete.jpg` },
-  { key: 'plaster-dark', label: 'Dark plaster', src: `${import.meta.env.BASE_URL}textures/walls/plaster-dark.jpg` },
+  { key: 'plaster-dark', label: 'Dark', src: `${import.meta.env.BASE_URL}textures/walls/plaster-dark.jpg` },
 ]
 
 const wallTextureCache = {}

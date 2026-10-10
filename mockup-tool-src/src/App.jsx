@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ColorPicker } from './ColorPicker.jsx'
+import { ZoomStage } from './ZoomStage.jsx'
 import { Carousel } from './Carousel.jsx'
 import { applyLighting, extractPalette, LIGHT_STYLES, MAT_PRESETS, rgbToHex, WALL_TONES } from './engine/color.js'
 import { applyCompositeFilters, DEFAULT_FILTERS, FILTER_PRESETS, FILTER_SLIDERS, filtersMatch } from './engine/filters.js'
@@ -164,7 +165,7 @@ function CornerEditor({ piece, onCornersChange }) {
         onPointerCancel={onPointerUp}
       />
       <div className="corner-hint">
-        Drag the four points onto the corners of the artwork itself. Order doesn&apos;t matter — just match each
+        Drag the four points onto the corners of the artwork itself. Order doesn&apos;t matter, just match each
         point to the nearest true corner.
       </div>
     </div>
@@ -737,6 +738,16 @@ export default function App() {
     })
   }
 
+  // A second finger means pinch-zoom, not a drag: drop the in-progress drag and
+  // repaint the committed scene.
+  const cancelCompositeDrag = () => {
+    const drag = dragRef.current
+    if (!drag) return
+    if (drag.rafId) cancelAnimationFrame(drag.rafId)
+    dragRef.current = null
+    paintComposite()
+  }
+
   const onCompositePointerUp = (e) => {
     const drag = dragRef.current
     if (drag) {
@@ -1088,7 +1099,7 @@ export default function App() {
     })
     if (!canvas) return
     if (capped) {
-      setCapNotice('Requested resolution exceeded the browser canvas limit — exported at the largest size it supports instead.')
+      setCapNotice('Requested resolution exceeded the browser canvas limit, so it was exported at the largest size it supports instead.')
     }
     downloadCanvasPng(canvas, `melbourne-artstudio-mockup-${exportMode}.png`)
   }
@@ -1103,7 +1114,7 @@ export default function App() {
     if (!allRectified || editingCorners) {
       return {
         title: `Straighten piece ${activeIndex + 1} of ${pieces.length}`,
-        sub: 'Drag each point onto the true edge of the artwork — ignore any existing frame in the photo.',
+        sub: 'Drag each point onto the true edge of the artwork and ignore any existing frame in the photo.',
       }
     }
     return {
@@ -1193,7 +1204,17 @@ export default function App() {
         <div className="start">
           <header className="topbar">
             {brandLockup}
-            {themeToggle}
+            <div className="topbar-actions">
+              <a
+                className="theme-toggle site-link"
+                href="https://melbourneartstudio.com/"
+                aria-label="Melbourne ArtStudio website"
+                title="Melbourne ArtStudio website"
+              >
+                <img src={`${import.meta.env.BASE_URL}branding/${theme === 'dark' ? 'magpie-dark' : 'magpie-light'}.svg`} alt="" />
+              </a>
+              {themeToggle}
+            </div>
           </header>
           <section
             className="hero"
@@ -1205,7 +1226,6 @@ export default function App() {
           >
             <div className="hero-banner">
               <h1>What will you design?</h1>
-              <p className="hero-sub">Pick a format, then upload up to {MAX_PIECES} photos of your pieces — drop them anywhere here.</p>
               <div className="format-row" role="radiogroup" aria-label="Output format">
                 {ASPECT_RATIOS.map((a) => (
                   <button
@@ -1386,11 +1406,11 @@ export default function App() {
               </button>
               {allRectified && editingCorners && (
                 <button className="btn" type="button" onClick={() => setEditingCorners(false)}>
-                  Back to wall
+                  <i className="fa-solid fa-rotate-left" aria-hidden="true" /> Back
                 </button>
               )}
               <button className="btn btn-primary btn-full" type="button" onClick={straightenPiece}>
-                Straighten this piece
+                Straighten
               </button>
             </div>
                   </div>
@@ -1464,10 +1484,7 @@ export default function App() {
                 <>
             <div className="field">
               <label>
-                Display{' '}
-                <span className="value">
-                  {PRESENTATION_STYLES.find((s) => s.key === presentationStyle)?.label}
-                </span>
+                Display
               </label>
               <div className="ratio-options">
                 {PRESENTATION_STYLES.map((s) => (
@@ -1486,7 +1503,6 @@ export default function App() {
               <div className="field">
                 <label>
                   Paper edge{' '}
-                  <span className="value">{paperEdge === 'bleed' ? 'Full bleed' : 'Bordered'}</span>
                 </label>
                 <div className="layout-options">
                   <button
@@ -1508,10 +1524,7 @@ export default function App() {
             )}
             <div className="field">
               <label>
-                Texture{' '}
-                <span className="value">
-                  {ART_TEXTURE_OPTIONS.find((o) => o.key === artTexture)?.label || 'None'}
-                </span>
+                Texture
               </label>
               <div className="layout-options art-texture-options">
                 {ART_TEXTURE_OPTIONS.map((o) => (
@@ -1561,7 +1574,7 @@ export default function App() {
                     type="button"
                     className={'swatch' + (selectedMatPreset === preset.key ? ' selected' : '')}
                     style={{ background: preset.hex }}
-                    title={`${preset.label} — ${preset.hex}`}
+                    title={`${preset.label} (${preset.hex})`}
                     aria-label={preset.label}
                     onClick={() => {
                       setMatColor(preset.hex)
@@ -1574,7 +1587,7 @@ export default function App() {
                   value={customMatColor}
                   selected={selectedMatPreset === null}
                   ariaLabel="Custom mat color"
-                  title={`Custom color — ${customMatColor.toUpperCase()}`}
+                  title={`Custom color: ${customMatColor.toUpperCase()}`}
                   palette={artworkPalette}
                   onChange={(hex) => {
                     setCustomMatColor(hex)
@@ -1586,7 +1599,7 @@ export default function App() {
             </div>
             <div className="field">
               <label>
-                Glazing <span className="value">{glaze === 'glass' ? 'Glass sheen' : 'Matte'}</span>
+                Glazing
               </label>
               <div className="layout-options">
                 <button
@@ -1620,7 +1633,7 @@ export default function App() {
                     type="button"
                     className={'swatch' + (selectedFramePreset === preset.key ? ' selected' : '')}
                     style={{ background: preset.hex }}
-                    title={`${preset.label} — ${preset.hex}`}
+                    title={`${preset.label} (${preset.hex})`}
                     aria-label={preset.label}
                     onClick={() => {
                       setFrameColor(preset.hex)
@@ -1633,7 +1646,7 @@ export default function App() {
                   value={customColor}
                   selected={selectedFramePreset === null}
                   ariaLabel="Custom frame color"
-                  title={`Custom color — ${customColor.toUpperCase()}`}
+                  title={`Custom color: ${customColor.toUpperCase()}`}
                   palette={artworkPalette}
                   onChange={(hex) => {
                     setCustomColor(hex)
@@ -1645,7 +1658,7 @@ export default function App() {
             </div>
             <div className="field">
               <label>
-                Surface grain <span className="value">{textureLabel}</span>
+                Surface grain
               </label>
               <div className="swatches">
                 {TEXTURE_OPTIONS.map((o) => (
@@ -1694,10 +1707,7 @@ export default function App() {
                 <>
             <div className="field">
               <label>
-                Background{' '}
-                <span className="value">
-                  {backgroundMode === 'wall' ? 'Wall' : backgroundMode === 'flat' ? 'Flat color' : 'Blurred artwork'}
-                </span>
+                Background
               </label>
               <div className="layout-options">
                 <button
@@ -1712,14 +1722,14 @@ export default function App() {
                   className={'layout-opt' + (backgroundMode === 'flat' ? ' selected' : '')}
                   onClick={() => setBackgroundMode('flat')}
                 >
-                  Flat color
+                  Flat
                 </button>
                 <button
                   type="button"
                   className={'layout-opt' + (backgroundMode === 'blurred' ? ' selected' : '')}
                   onClick={() => setBackgroundMode('blurred')}
                 >
-                  Blurred artwork
+                  Blurred
                 </button>
               </div>
             </div>
@@ -1727,7 +1737,7 @@ export default function App() {
                     <>
                 <div className="field">
                   <label>
-                    Wall tone <span className="value">{wallLabel}</span>
+                    Wall tone
                   </label>
                   <div className="swatches">
                     {WALL_TONES.map((w) => (
@@ -1744,7 +1754,7 @@ export default function App() {
                       value={wallColor}
                       selected={!WALL_TONES.some((w) => w.hex === wallColor)}
                       ariaLabel="Custom wall color"
-                      title={`Custom color — ${wallColor.toUpperCase()}`}
+                      title={`Custom color: ${wallColor.toUpperCase()}`}
                       palette={artworkPalette}
                       onChange={setWallColor}
                     />
@@ -1752,10 +1762,7 @@ export default function App() {
                 </div>
                 <div className="field">
                   <label>
-                    Wall texture{' '}
-                    <span className="value">
-                      {WALL_TEXTURE_OPTIONS.find((o) => o.key === wallTextureKey)?.label || 'None'}
-                    </span>
+                    Wall texture
                   </label>
                   <div className="layout-options">
                     <button
@@ -1809,7 +1816,7 @@ export default function App() {
                     value={flatColor}
                     selected={!WALL_TONES.some((w) => w.hex === flatColor)}
                     ariaLabel="Custom flat background color"
-                    title={`Custom color — ${flatColor.toUpperCase()}`}
+                    title={`Custom color: ${flatColor.toUpperCase()}`}
                     palette={artworkPalette}
                     onChange={setFlatColor}
                   />
@@ -1869,7 +1876,6 @@ export default function App() {
             <div className="field">
               <label>
                 Light style{' '}
-                <span className="value">{LIGHT_STYLES.find((s) => s.key === lightStyle)?.label}</span>
               </label>
               <div className="layout-options">
                 {LIGHT_STYLES.map((s) => (
@@ -1920,7 +1926,6 @@ export default function App() {
             <div className="field">
               <label>
                 Look{' '}
-                <span className="value">{FILTER_PRESETS.find((p) => filtersMatch(filters, p.values))?.label ?? 'Custom'}</span>
               </label>
               <div className="layout-options filter-presets">
                 {FILTER_PRESETS.map((p) => (
@@ -1960,7 +1965,6 @@ export default function App() {
             <div className="field">
               <label>
                 Output shape{' '}
-                <span className="value">{ASPECT_RATIOS.find((a) => a.key === aspectRatioKey)?.label}</span>
               </label>
               <div className="ratio-options">
                 {ASPECT_RATIOS.map((a) => (
@@ -1986,7 +1990,7 @@ export default function App() {
               {exportMode === 'hires' && 'Long edge up to 4000px, capped by the browser canvas limit.'}
               {exportMode === 'native' && "Scaled so the artwork itself keeps its full photographed resolution."}
               {exportMode === 'artwork' &&
-                'Just the straightened artwork — no frame, mat or wall. For the gallery/archiving.'}
+                'Just the straightened artwork, with no frame, mat or wall. For the gallery/archiving.'}
             </div>
             <div className="field">
               <div className="ratio-options">
@@ -2009,10 +2013,6 @@ export default function App() {
               Download PNG
             </button>
             {capNotice && <div className="cap-notice">{capNotice}</div>}
-                  <div className="footer-note">
-                    Everything renders locally in your browser — nothing is uploaded anywhere. Perspective correction
-                    and frame rendering is approximate; nudge the points and controls until it reads right to your eye.
-                  </div>
                 </>
               )}
             </div>
@@ -2024,7 +2024,7 @@ export default function App() {
                 <span className="dot" /> Rendering…
               </div>
             )}
-            <div className="viewer-stage">
+            <ZoomStage resetKey={`${stage}-${activeIndex}`} onPinchStart={cancelCompositeDrag}>
           {pieces.length > 0 && !showComposite && activePiece && (
             <CornerEditor
               piece={activePiece}
@@ -2043,7 +2043,7 @@ export default function App() {
               onPointerCancel={onCompositePointerUp}
             />
           )}
-            </div>
+            </ZoomStage>
           </main>
         </div>
       )}

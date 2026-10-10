@@ -266,7 +266,7 @@ export function applyLighting(hex, colorTemp = 0, intensity = 1) {
 // per the PRD's requirement that all three stay consistent.
 export const LIGHT_STYLES = [
   { key: 'museum', label: 'Museum' },
-  { key: 'picture', label: 'Picture light' },
+  { key: 'picture', label: 'Picture' },
   { key: 'window', label: 'Window' },
 ]
 

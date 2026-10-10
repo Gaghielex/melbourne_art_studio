@@ -990,11 +990,11 @@ function drawPrintNoFrame(ctx, x, y, artCanvas, wallColor, skipShadow, lighting 
 
 // v2 PRD §3.4 — presentation styles.
 export const PRESENTATION_STYLES = [
-  { key: 'framed-mat', label: 'Framed + mat' },
-  { key: 'framed-no-mat', label: 'Framed, no mat' },
+  { key: 'framed-mat', label: 'Matted' },
+  { key: 'framed-no-mat', label: 'No mat' },
   { key: 'float-mount', label: 'Float mount' },
-  { key: 'unframed-paper', label: 'Unframed paper' },
-  { key: 'print', label: 'No frame (print)' },
+  { key: 'unframed-paper', label: 'Paper' },
+  { key: 'print', label: 'Print' },
 ]
 
 // Translates the user's frame-width/mat-width sliders into whatever those
@@ -1340,7 +1340,7 @@ export const ASPECT_RATIOS = [
 // of them without caring which preset produced the initial layout.
 export const LAYOUT_OPTIONS = [
   { key: 'row', label: 'Lined up' },
-  { key: 'stagger', label: 'Salon-stagger' },
+  { key: 'stagger', label: 'Salon' },
   { key: 'grid', label: 'Grid' },
   { key: 'pyramid', label: 'Pyramid' },
   { key: 'cluster', label: 'Cluster' },

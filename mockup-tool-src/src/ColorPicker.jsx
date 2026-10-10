@@ -224,7 +224,7 @@ export function ColorPicker({ value, onChange, selected, ariaLabel, title, palet
         type="button"
         className={'swatch-custom' + (selected ? ' selected' : '')}
         style={size ? { background: value, width: size, height: size, fontSize: Math.round(size * 0.42) } : { background: value }}
-        title={title || `Custom color — ${String(value).toUpperCase()}`}
+        title={title || `Custom color: ${String(value).toUpperCase()}`}
         aria-label={ariaLabel || 'Custom color'}
         aria-expanded={open}
         aria-haspopup="dialog"

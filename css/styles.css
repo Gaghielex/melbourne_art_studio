@@ -778,3 +778,38 @@ footer .social-icon:hover {
 [data-aos-delay="300"] {
     transition-delay: 300ms;
 }
+
+/* ── Gallery scroll-reveal (see js/masonry-fix.js) ── */
+.gallery-item.reveal-pending {
+    opacity: 0;
+    transform: translateY(32px);
+}
+.gallery-item.reveal-in {
+    animation: galleryReveal 0.9s cubic-bezier(0.22, 0.7, 0.2, 1) backwards;
+}
+@keyframes galleryReveal {
+    from { opacity: 0; transform: translateY(32px); }
+    to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .gallery-item.reveal-pending { opacity: 1; transform: none; }
+}
+
+/* ── Lightbox: no page scroll or bounce behind it, smooth image motion ── */
+.lightbox {
+    overscroll-behavior: contain;
+    touch-action: none;
+}
+.lb-info {
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+}
+.lb-image-wrap img {
+    will-change: transform, opacity;
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+@supports (height: 100dvh) {
+    .lb-image-wrap img { max-height: calc(100dvh - 160px); }
+}
