@@ -43,6 +43,7 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -615,11 +616,16 @@ input[type='range'] {
 }
 
 /* ── Start screen ─────────────────────────────────────────────── */
+/* Pinned to all four screen edges so the app fills the display, including the
+   areas under the status bar and home indicator (viewport-fit=cover). */
 .start {
-  min-height: 100vh;
-  min-height: 100dvh;
+  position: fixed;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  background: var(--background);
 }
 
 .topbar {
@@ -627,7 +633,8 @@ input[type='range'] {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 24px;
+  padding: calc(14px + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) 14px
+    max(24px, env(safe-area-inset-left));
 }
 
 .topbar-actions {
@@ -765,12 +772,58 @@ input[type='range'] {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.format-chip:hover .format-icon {
-  transform: translateY(-3px);
+.format-chip {
+  -webkit-tap-highlight-color: transparent;
 }
 
+.format-icon {
+  position: relative;
+}
+
+.format-label,
+.format-sub {
+  opacity: 0.78;
+  transition: opacity 0.2s ease;
+}
+
+@media (hover: hover) {
+  .format-chip:hover .format-icon {
+    transform: translateY(-3px);
+  }
+}
+
+.format-chip:active .format-icon {
+  transform: scale(0.94);
+}
+
+/* Selected: solid white ring, a check badge and full-strength label. */
 .format-chip.selected .format-icon {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.55), 0 8px 18px rgba(0, 0, 0, 0.22);
+  transform: scale(1.06);
+  box-shadow: 0 0 0 3px var(--primary), 0 0 0 6px #fff, 0 10px 22px rgba(0, 0, 0, 0.3);
+}
+
+.format-chip.selected .format-icon::after {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.format-chip.selected .format-label,
+.format-chip.selected .format-sub {
+  opacity: 1;
 }
 
 .ratio-box {
@@ -956,8 +1009,8 @@ input[type='range'] {
   grid-template-areas:
     'top top top'
     'rail panel viewer';
-  height: 100vh;
-  height: 100dvh;
+  position: fixed;
+  inset: 0;
   background: var(--background);
 }
 
@@ -967,7 +1020,7 @@ input[type='range'] {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 20px;
+  padding: calc(10px + env(safe-area-inset-top)) 20px 10px;
   background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
@@ -1292,7 +1345,8 @@ input:focus-visible,
   }
 
   .editor-top {
-    padding: 8px max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left));
+    padding: calc(8px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 8px
+      max(16px, env(safe-area-inset-left));
   }
 
   .editor-top .brand-sub {
