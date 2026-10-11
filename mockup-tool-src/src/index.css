@@ -1395,7 +1395,7 @@ input:focus-visible,
     overflow-x: auto;
     overflow-y: hidden;
     gap: 4px;
-    padding: 10px max(14px, env(safe-area-inset-right)) calc(2px + env(safe-area-inset-bottom))
+    padding: 10px max(14px, env(safe-area-inset-right)) calc(2px + env(safe-area-inset-bottom) * 0.3)
       max(14px, env(safe-area-inset-left));
     scroll-padding-inline: 14px;
     overscroll-behavior-x: contain;

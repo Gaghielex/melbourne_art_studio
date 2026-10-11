@@ -779,30 +779,15 @@ footer .social-icon:hover {
     transition-delay: 300ms;
 }
 
-/* ── Gallery scroll-reveal (see js/masonry-fix.js) ──
-   Items stay on their own compositing layer (will-change + translate3d) from
-   the start. Promoting a transformed item to a layer for the animation and
-   dropping it afterwards makes it visibly shift inside the CSS columns, which
-   showed up as a jiggle right after each item faded in. */
-.gallery-item {
-    will-change: transform, opacity;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-.gallery-item.reveal-pending {
+/* ── Gallery scroll reveal (see js/masonry-fix.js) ── */
+.gallery-item.reveal {
     opacity: 0;
-    transform: translate3d(0, 32px, 0);
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
 }
-.gallery-item.reveal-in {
-    animation: galleryReveal 0.9s cubic-bezier(0.22, 0.7, 0.2, 1) backwards;
-}
-@keyframes galleryReveal {
-    from { opacity: 0; transform: translate3d(0, 32px, 0); }
-    to { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-@media (prefers-reduced-motion: reduce) {
-    .gallery-item.reveal-pending { opacity: 1; transform: translate3d(0, 0, 0); }
+.gallery-item.reveal.reveal-visible {
+    opacity: 1;
+    transform: none;
 }
 
 /* ── Lightbox: no page scroll or bounce behind it, smooth image motion ── */
