@@ -49,9 +49,14 @@
 html,
 body {
   overflow-x: hidden;
-  overscroll-behavior: none;
-  touch-action: pan-x pan-y;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Page-level pinch zoom is blocked on the app shells (not on html/body, and not
+   via the viewport meta), so only the canvas stage zooms. */
+.start,
+.editor {
+  touch-action: pan-x pan-y;
 }
 
 html,
@@ -633,7 +638,6 @@ input[type='range'] {
 .start {
   position: fixed;
   inset: 0;
-  height: var(--app-h, auto);
   overflow-x: hidden;
   overflow-y: auto;
   display: flex;
@@ -1004,7 +1008,6 @@ input[type='range'] {
     'rail panel viewer';
   position: fixed;
   inset: 0;
-  height: var(--app-h, auto);
   background: var(--background);
 }
 
@@ -1589,4 +1592,12 @@ html:has(.editor),
 html:has(.editor) body,
 html:has(.editor) #root {
   background: var(--surface);
+}
+
+/* On the home screen the carousel is the last thing on the page, so anything
+   below it (the strip iOS leaves under a home-screen app) takes its dark color. */
+html:has(.start),
+html:has(.start) body,
+html:has(.start) #root {
+  background: #0a0a10;
 }
