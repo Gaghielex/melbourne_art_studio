@@ -1169,8 +1169,9 @@ export default function App() {
         alt="Melbourne ArtStudio"
       />
       <div>
-        <div className="brand-mark">Melbourne ArtStudio</div>
-        <div className="brand-sub">Artwork mockup tool</div>
+        <div className="brand-mark">
+          <strong>Melbourne</strong> ArtStudio
+        </div>
       </div>
     </div>
   )
@@ -1182,7 +1183,7 @@ export default function App() {
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
       onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
     >
-      <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`} aria-hidden="true" />
+      <i className={`fa-solid ${theme === 'light' ? 'fa-sun' : 'fa-moon'}`} aria-hidden="true" />
     </button>
   )
   const uploadClick = () => fileInputRef.current?.click()
@@ -1211,7 +1212,9 @@ export default function App() {
                 aria-label="Melbourne ArtStudio website"
                 title="Melbourne ArtStudio website"
               >
-                <img src={`${import.meta.env.BASE_URL}branding/${theme === 'dark' ? 'magpie-dark' : 'magpie-light'}.svg`} alt="" />
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <path d="M12 3.2 2.6 11.4a.8.8 0 0 0 .5 1.4H5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-7.2h1.9a.8.8 0 0 0 .5-1.4z" />
+                </svg>
               </a>
               {themeToggle}
             </div>
@@ -1225,7 +1228,7 @@ export default function App() {
             }}
           >
             <div className="hero-banner">
-              <h1>What will you design?</h1>
+              <h1>Hello Gabriel, what will you design?</h1>
               <div className="format-row" role="radiogroup" aria-label="Output format">
                 {ASPECT_RATIOS.map((a) => (
                   <button

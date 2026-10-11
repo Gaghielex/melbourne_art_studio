@@ -130,11 +130,16 @@ html {
 
 .brand-mark {
   font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  font-size: 21px;
+  font-weight: 400;
+  font-size: 18px;
+  width: min-content;
   letter-spacing: 0.01em;
   color: var(--text-hi);
   line-height: 1.15;
+}
+
+.brand-mark strong {
+  font-weight: 700;
 }
 
 .brand-sub {
@@ -149,15 +154,22 @@ html {
   height: 42px;
   flex: 0 0 42px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 14px;
   background: var(--surface-raised);
-  color: var(--primary);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
+.theme-toggle .fa-sun {
+  color: #eab308;
+}
+
+.theme-toggle .fa-moon {
+  color: #93c5fd;
+}
+
 .theme-toggle:hover {
-  color: var(--secondary);
   transform: translateY(-2px);
   box-shadow: var(--card-shadow);
 }
@@ -621,6 +633,7 @@ input[type='range'] {
 .start {
   position: fixed;
   inset: 0;
+  height: var(--app-h, auto);
   overflow-x: hidden;
   overflow-y: auto;
   display: flex;
@@ -650,9 +663,7 @@ input[type='range'] {
   box-sizing: border-box;
 }
 
-.site-link img {
-  width: 22px;
-  height: 22px;
+.site-link svg {
   display: block;
 }
 
@@ -705,10 +716,10 @@ input[type='range'] {
 
 .hero-banner h1 {
   font-family: 'Plus Jakarta Sans', 'Figtree', sans-serif;
-  font-size: clamp(28px, 5vw, 44px);
-  font-weight: 700;
+  font-size: clamp(20px, 3.4vw, 30px);
+  font-weight: 500;
   line-height: 1.1;
-  margin: 0 0 26px;
+  margin: 0 0 40px;
 }
 
 .hero-cta {
@@ -993,6 +1004,7 @@ input[type='range'] {
     'rail panel viewer';
   position: fixed;
   inset: 0;
+  height: var(--app-h, auto);
   background: var(--background);
 }
 
@@ -1005,10 +1017,6 @@ input[type='range'] {
   padding: calc(10px + env(safe-area-inset-top)) 20px 10px;
   background: var(--surface);
   border-bottom: 1px solid var(--line);
-}
-
-.editor-top .brand-mark {
-  font-size: 18px;
 }
 
 .editor-top-actions {
@@ -1336,8 +1344,18 @@ input:focus-visible,
     display: none;
   }
 
-  .editor-top .brand-mark {
-    font-size: 16px;
+  .brand-lockup {
+    gap: 8px;
+  }
+
+  .brand-logo {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+
+  .brand-mark {
+    font-size: 15px;
   }
 
   .editor-top-actions {
