@@ -1398,7 +1398,7 @@ input:focus-visible,
     overflow-x: auto;
     overflow-y: hidden;
     gap: 4px;
-    padding: 10px max(14px, env(safe-area-inset-right)) calc(2px + env(safe-area-inset-bottom) * 0.3)
+    padding: 10px max(14px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom) * 0.3)
       max(14px, env(safe-area-inset-left));
     scroll-padding-inline: 14px;
     overscroll-behavior-x: contain;
@@ -1600,4 +1600,14 @@ html:has(.start),
 html:has(.start) body,
 html:has(.start) #root {
   background: #0a0a10;
+}
+
+/* iOS home-screen apps can open with a short viewport (a strip under the app)
+   that only corrects itself once the page is scrolled. A page that can scroll by
+   1px, nudged on launch (see main.jsx), lets it correct itself immediately. The
+   app shells are position: fixed, so this is invisible. */
+@media (hover: none) and (pointer: coarse) {
+  body {
+    min-height: calc(100dvh + 1px);
+  }
 }
