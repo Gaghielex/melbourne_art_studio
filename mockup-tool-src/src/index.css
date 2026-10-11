@@ -62,7 +62,7 @@ body,
   min-height: 100%;
   background: var(--ink);
   color: var(--text-hi);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 14px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -256,7 +256,7 @@ input[type='file'] {
   border: 1px solid var(--line-strong);
   background: transparent;
   color: var(--text-hi);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
@@ -692,7 +692,7 @@ input[type='range'] {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
-  font: 600 12.5px 'Inter', sans-serif;
+  font: 600 12.5px 'Figtree', sans-serif;
   cursor: pointer;
   backdrop-filter: blur(6px);
   transition: background 0.3s ease, transform 0.3s ease;
@@ -704,7 +704,7 @@ input[type='range'] {
 }
 
 .hero-banner h1 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Plus Jakarta Sans', 'Figtree', sans-serif;
   font-size: clamp(28px, 5vw, 44px);
   font-weight: 700;
   line-height: 1.1;
@@ -748,7 +748,7 @@ input[type='range'] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 14px;
   width: 82px;
   padding: 0;
   border: 0;
@@ -762,7 +762,7 @@ input[type='range'] {
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  background: #fff;
+  background: #eceef1;
   color: var(--primary);
   display: flex;
   align-items: center;
@@ -796,29 +796,11 @@ input[type='range'] {
   transform: scale(0.94);
 }
 
-/* Selected: solid white ring, a check badge and full-strength label. */
+/* Selected: white fill, a double ring and full-strength label. */
 .format-chip.selected .format-icon {
+  background: #fff;
   transform: scale(1.06);
   box-shadow: 0 0 0 3px var(--primary), 0 0 0 6px #fff, 0 10px 22px rgba(0, 0, 0, 0.3);
-}
-
-.format-chip.selected .format-icon::after {
-  content: '\f00c';
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #10b981;
-  color: #fff;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 0 2px #fff;
 }
 
 .format-chip.selected .format-label,
@@ -841,7 +823,7 @@ input[type='range'] {
 .format-sub {
   font-size: 10.5px;
   opacity: 0.8;
-  margin-top: -4px;
+  margin-top: -10px;
 }
 
 .export-row {
@@ -875,7 +857,7 @@ input[type='range'] {
   color: var(--text-secondary);
   border-radius: 999px;
   padding: 8px 16px;
-  font: 500 12px 'Inter', sans-serif;
+  font: 500 12px 'Figtree', sans-serif;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
     transform 0.1s ease;
@@ -1064,7 +1046,7 @@ input[type='range'] {
   border-radius: 12px;
   background: transparent;
   color: var(--text-secondary);
-  font: 500 10.5px 'Inter', sans-serif;
+  font: 500 10.5px 'Figtree', sans-serif;
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -1105,7 +1087,7 @@ input[type='range'] {
 }
 
 .panel-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Plus Jakarta Sans', 'Figtree', sans-serif;
   font-weight: 700;
   font-size: 20px;
 }
@@ -1152,7 +1134,7 @@ input[type='range'] {
 }
 
 .viewer-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Plus Jakarta Sans', 'Figtree', sans-serif;
   font-size: 22px;
   font-weight: 700;
 }
@@ -1199,7 +1181,7 @@ input[type='range'] {
   border-radius: 999px;
   background: var(--surface);
   color: var(--text-primary);
-  font: 600 12px 'Inter', sans-serif;
+  font: 600 12px 'Figtree', sans-serif;
   box-shadow: var(--card-shadow);
   cursor: pointer;
 }
@@ -1297,7 +1279,8 @@ input:focus-visible,
 /* Mobile: canvas on top, controls panel + category tab bar below (editing-app layout). */
 @media (max-width: 767px) {
   .topbar {
-    padding: 10px 14px;
+    padding: calc(12px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px
+      max(16px, env(safe-area-inset-left));
   }
 
   .hero {
@@ -1394,7 +1377,7 @@ input:focus-visible,
     overflow-x: auto;
     overflow-y: hidden;
     gap: 4px;
-    padding: 10px max(14px, env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom))
+    padding: 10px max(14px, env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom))
       max(14px, env(safe-area-inset-left));
     scroll-padding-inline: 14px;
     overscroll-behavior-x: contain;
@@ -1542,7 +1525,7 @@ input:focus-visible,
   border: 0;
   background: none;
   color: var(--text-muted);
-  font: 500 11px 'Inter', sans-serif;
+  font: 500 11px 'Figtree', sans-serif;
   padding: 6px;
   cursor: pointer;
 }
@@ -1580,4 +1563,12 @@ input:focus-visible,
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--card-shadow);
+}
+
+/* In the editor, anything the layout doesn't cover (e.g. under the iOS home
+   indicator) takes the bottom bar's color instead of the page background. */
+html:has(.editor),
+html:has(.editor) body,
+html:has(.editor) #root {
+  background: var(--surface);
 }
