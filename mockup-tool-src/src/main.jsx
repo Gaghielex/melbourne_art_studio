@@ -9,6 +9,18 @@ import './index.css'
   document.addEventListener(type, (e) => e.preventDefault()),
 )
 
+// The home screen is laid out at the device's full screen height (not the
+// viewport's), so its carousel never resizes if iOS corrects the viewport after
+// launch; the viewport simply reveals more of an already full-height layout.
+const syncScreenHeight = () => {
+  const portrait = window.innerHeight > window.innerWidth
+  const h = portrait ? Math.max(window.screen.height, window.innerHeight) : window.innerHeight
+  document.documentElement.style.setProperty('--screen-h', `${h}px`)
+}
+syncScreenHeight()
+window.addEventListener('resize', syncScreenHeight)
+window.addEventListener('orientationchange', () => setTimeout(syncScreenHeight, 300))
+
 // Launching from the iOS home screen can leave the viewport short until the first
 // scroll gesture. Nudge the page by 1px to trigger the same correction ourselves.
 const nudgeViewport = () => {

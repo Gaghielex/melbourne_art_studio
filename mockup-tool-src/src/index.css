@@ -1612,18 +1612,32 @@ html:has(.start) #root {
   }
 }
 
-/* Home on touch devices: the screen stays fixed (no scrolling) but is laid out
-   140px taller than the display, so the carousel runs off the bottom edge instead
-   of ending short of it, whatever height iOS reports at launch. The editor is
+/* Home on touch devices: fixed (no scrolling) and laid out at the full screen
+   height (--screen-h, set in main.jsx), independent of the viewport height iOS
+   reports at launch, so nothing resizes when it corrects itself. The editor is
    untouched. */
 @media (hover: none) and (pointer: coarse) {
   .start {
-    bottom: -140px;
+    bottom: auto;
+    height: var(--screen-h, 100dvh);
     overflow: hidden;
   }
 
-  /* Keep the logo centered in the part of the carousel that's on screen. */
+  /* The carousel fades to its own dark background over its last 140px, so what
+     iOS leaves below the app at launch reads as part of the design. */
   .carousel-brand {
-    top: calc(50% - 70px);
+    z-index: 3;
+  }
+
+  .carousel::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 140px;
+    background: linear-gradient(to bottom, rgba(10, 10, 16, 0) 0%, #0a0a10 62%);
+    pointer-events: none;
+    z-index: 2;
   }
 }
