@@ -1611,3 +1611,19 @@ html:has(.start) #root {
     min-height: calc(100dvh + 1px);
   }
 }
+
+/* Home on touch devices: the screen stays fixed (no scrolling) but is laid out
+   140px taller than the display, so the carousel runs off the bottom edge instead
+   of ending short of it, whatever height iOS reports at launch. The editor is
+   untouched. */
+@media (hover: none) and (pointer: coarse) {
+  .start {
+    bottom: -140px;
+    overflow: hidden;
+  }
+
+  /* Keep the logo centered in the part of the carousel that's on screen. */
+  .carousel-brand {
+    top: calc(50% - 70px);
+  }
+}
