@@ -134,9 +134,12 @@ function initLightbox() {
     if (lbPrev) lbPrev.addEventListener('click', () => go(-1));
     if (lbNext) lbNext.addEventListener('click', () => go(1));
 
-    // Swipe: the image follows the finger; release past a threshold (or with a
-    // quick flick) to change artwork, otherwise it springs back. Vertical
-    // movement never scrolls anything, and the info panel keeps its own scroll.
+    // Touch on the image area. One finger swipes between artworks: the image
+    // follows the finger; release past a threshold (or with a quick flick) to
+    // change artwork, otherwise it springs back. Two fingers pinch-zoom the image
+    // (clipped to the image area, never the description); releasing the pinch
+    // springs it back to its original size. Vertical movement never scrolls
+    // anything.
     let startX = 0;
     let startY = 0;
     let startT = 0;
@@ -144,8 +147,45 @@ function initLightbox() {
     let axis = null;
     let tracking = false;
 
+    let pinching = false;
+    let pinchLocked = false; // ignore leftover fingers until every finger is up
+    let pinchStartDist = 1;
+    let pinchStartMid = { x: 0, y: 0 };
+    const MAX_ZOOM = 4;
+
+    const touchDist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY) || 1;
+    const touchMid = (t) => ({ x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 });
+
+    function startPinch(touches) {
+        tracking = false;
+        pinching = true;
+        pinchLocked = true;
+        pinchStartDist = touchDist(touches);
+        pinchStartMid = touchMid(touches);
+        // Zoom about the point between the fingers.
+        const rect = lbImage.getBoundingClientRect();
+        lbImage.style.transition = 'none';
+        lbImage.style.opacity = '1';
+        lbImage.style.transformOrigin = `${pinchStartMid.x - rect.left}px ${pinchStartMid.y - rect.top}px`;
+        lbImage.style.transform = 'none';
+    }
+
+    function endPinch() {
+        pinching = false;
+        lastDragAt = Date.now();
+        lbImage.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        lbImage.style.transform = '';
+        setTimeout(() => {
+            if (!pinching) lbImage.style.transformOrigin = '';
+        }, 320);
+    }
+
     wrap.addEventListener('touchstart', (e) => {
-        if (animating || e.touches.length !== 1) { tracking = false; return; }
+        if (e.touches.length >= 2) {
+            if (!pinching) startPinch(e.touches);
+            return;
+        }
+        if (animating || pinchLocked) { tracking = false; return; }
         tracking = true;
         axis = null;
         dx = 0;
@@ -155,6 +195,14 @@ function initLightbox() {
     }, { passive: true });
 
     wrap.addEventListener('touchmove', (e) => {
+        if (pinching && e.touches.length >= 2) {
+            e.preventDefault();
+            const scale = Math.min(MAX_ZOOM, Math.max(1, touchDist(e.touches) / pinchStartDist));
+            const mid = touchMid(e.touches);
+            lbImage.style.transform =
+                `translate(${mid.x - pinchStartMid.x}px, ${mid.y - pinchStartMid.y}px) scale(${scale})`;
+            return;
+        }
         if (!tracking) return;
         const mx = e.touches[0].clientX - startX;
         const my = e.touches[0].clientY - startY;
@@ -167,7 +215,9 @@ function initLightbox() {
         lbImage.style.opacity = String(1 - Math.min(Math.abs(dx) / (window.innerWidth * 1.2), 0.5));
     }, { passive: false });
 
-    const endSwipe = () => {
+    const endSwipe = (e) => {
+        if (pinching && e.touches.length < 2) endPinch();
+        if (e.touches.length === 0) pinchLocked = false;
         if (!tracking) return;
         tracking = false;
         if (axis !== 'x') return;
@@ -183,6 +233,13 @@ function initLightbox() {
     };
     wrap.addEventListener('touchend', endSwipe);
     wrap.addEventListener('touchcancel', endSwipe);
+
+    // iOS Safari's own page pinch would zoom the whole page, description included.
+    ['gesturestart', 'gesturechange'].forEach((type) =>
+        document.addEventListener(type, (e) => {
+            if (lightbox.classList.contains('active')) e.preventDefault();
+        }, { passive: false })
+    );
 
     document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('active')) return;
