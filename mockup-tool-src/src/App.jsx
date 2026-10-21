@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ColorPicker } from './ColorPicker.jsx'
 import { ZoomStage } from './ZoomStage.jsx'
+import { GalleryPicker } from './GalleryPicker.jsx'
 import { Carousel } from './Carousel.jsx'
 import { applyLighting, extractPalette, LIGHT_STYLES, MAT_PRESETS, rgbToHex, WALL_TONES } from './engine/color.js'
 import { applyCompositeFilters, DEFAULT_FILTERS, FILTER_PRESETS, FILTER_SLIDERS, filtersMatch } from './engine/filters.js'
@@ -215,6 +216,7 @@ const CATEGORIES = [
 
 export default function App() {
   const fileInputRef = useRef(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const compositeRef = useRef(null)
   const renderRaf = useRef(0)
   const paintGen = useRef(0)
@@ -355,7 +357,9 @@ export default function App() {
     document.documentElement.dataset.theme = theme
   }, [theme])
 
-  const addFiles = async (fileList) => {
+  // `flat` is for finished, already-straight artwork (e.g. from the site gallery):
+  // it skips corner straightening and goes straight to the wall.
+  const addFiles = async (fileList, { flat = false } = {}) => {
     const remaining = MAX_PIECES - pieces.length
     const files = Array.from(fileList)
       .filter((f) => f.type.startsWith('image/'))
@@ -367,6 +371,8 @@ export default function App() {
       const scale = Math.min(1, MAX_DISPLAY / Math.max(img.naturalWidth, img.naturalHeight))
       const dw = Math.round(img.naturalWidth * scale)
       const dh = Math.round(img.naturalHeight * scale)
+      const corners = defaultCorners(dw, dh)
+      const rectified = flat ? rectifyPiece(natCanvas, corners, scale) : null
       nextPieces.push({
         id: 'p' + Date.now() + Math.random().toString(36).slice(2, 6),
         img,
@@ -375,15 +381,16 @@ export default function App() {
         scale,
         displayW: dw,
         displayH: dh,
-        corners: defaultCorners(dw, dh),
-        rectified: null,
-        palette: null,
+        corners,
+        rectified,
+        palette: rectified ? extractPalette(rectified, 5) : null,
       })
     }
     if (nextPieces.length === pieces.length) return
     setPieces(nextPieces)
     setActiveIndex(nextPieces.length - 1)
-    setEditingCorners(true)
+    // Straight to the wall only when nothing is waiting to be straightened.
+    setEditingCorners(!nextPieces.every((p) => p.rectified))
     // Manual positions are stored as a fraction of the canvas, and the
     // canvas is fit to however many pieces there are — a fraction tuned
     // for a 5-piece canvas can land way off-canvas once there's only 1
@@ -1254,9 +1261,14 @@ export default function App() {
                   </button>
                 ))}
               </div>
-              <button className="btn hero-cta" type="button" onClick={uploadClick}>
-                <i className="fa-solid fa-arrow-up-from-bracket" aria-hidden="true" /> Upload artwork
-              </button>
+              <div className="hero-actions">
+                <button className="btn hero-cta" type="button" onClick={uploadClick}>
+                  <i className="fa-solid fa-arrow-up-from-bracket" aria-hidden="true" /> Upload artwork
+                </button>
+                <button className="btn hero-cta hero-cta-alt" type="button" onClick={() => setPickerOpen(true)}>
+                  <i className="fa-regular fa-images" aria-hidden="true" /> Choose from gallery
+                </button>
+              </div>
             </div>
           </section>
           <Carousel />
@@ -1395,6 +1407,17 @@ export default function App() {
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <i className="fa-solid fa-plus" aria-hidden="true" />
+                  </button>
+                )}
+              {pieces.length < MAX_PIECES && (
+                  <button
+                    type="button"
+                    className="thumb thumb-add"
+                    aria-label="Add from the gallery"
+                    title="Add from the gallery"
+                    onClick={() => setPickerOpen(true)}
+                  >
+                    <i className="fa-regular fa-images" aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -2049,6 +2072,14 @@ export default function App() {
             </ZoomStage>
           </main>
         </div>
+      )}
+
+      {pickerOpen && (
+        <GalleryPicker
+          limit={MAX_PIECES - pieces.length}
+          onAdd={(files) => addFiles(files, { flat: true })}
+          onClose={() => setPickerOpen(false)}
+        />
       )}
     </div>
   )
